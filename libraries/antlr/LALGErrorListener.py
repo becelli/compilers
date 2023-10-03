@@ -7,5 +7,5 @@ class LALGErrorListener(AntlrErrorListener):
     def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
         self.errors.append(f"Error on line {line}, column {column}: {msg}")
 
-    def getErrors(self):
-        return '\n\n'.join(self.errors) if self.errors else ''
+    def getErrorMessage(self):
+        return ''.join(self.errors) if self.errors else ''

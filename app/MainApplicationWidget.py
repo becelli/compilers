@@ -125,10 +125,8 @@ class MainApplicationWidget(QWidget):
 
         parser.variable()
 
-        errors = listener.getErrors()
         self.outputError.clear()
-        for error in errors:
-            self.outputError.append(error)
+        self.outputError.append(listener.getErrorMessage())
         
 
     def toggleLexer(self):
