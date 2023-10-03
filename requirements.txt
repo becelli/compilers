@@ -1,0 +1,3 @@
+PyQt6
+PyQt6-QScintilla
+antlr4-python3-runtime
