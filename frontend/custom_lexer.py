@@ -1,90 +1,93 @@
-import re
-from PyQt6.Qsci import QsciLexerCustom
-from PyQt6.QtGui import QFont, QColor
 from dataclasses import dataclass
 from enum import Enum
+import re
+
+from PyQt6.Qsci import QsciLexerCustom, QsciScintilla
+from PyQt6.QtGui import QColor, QFont
 
 class Colors(Enum):
-    PRIMARY_STYLE = 0
-    SECONDARY_STYLE = 1
-    COMMENT_STYLE = 2
-    BACKGROUND_STYLE = 3
-    FOREGROUND_STYLE = 4
+    primaryStyle = 0
+    secondaryStyle = 1
+    commentStyle = 2
+    backgroundStyle = 3
+    foregroundStyle = 4
 
 @dataclass
 class ColorMapper:
     @staticmethod
-    def get_color(style: Colors) -> QColor:
+    def getColor(style: Colors) -> QColor:
         mapper = {
-            Colors.PRIMARY_STYLE.value: QColor("#f8f8f2"),
-            Colors.SECONDARY_STYLE.value: QColor("#ff79c6"),
-            Colors.COMMENT_STYLE.value: QColor("#6272a4"),
-            Colors.BACKGROUND_STYLE.value: QColor("#282a36"),
-            Colors.FOREGROUND_STYLE.value: QColor("#f8f8f2")
+            Colors.primaryStyle.value: QColor("#f8f8f2"),
+            Colors.secondaryStyle.value: QColor("#ff79c6"),
+            Colors.commentStyle.value: QColor("#6272a4"),
+            Colors.backgroundStyle.value: QColor("#282a36"),
+            Colors.foregroundStyle.value: QColor("#f8f8f2")
         }
         return mapper[style.value]
 
 
 class CustomLexer(QsciLexerCustom):
-    RESERVED_KEYWORDS = { 
+    reservedKeywords = { 
         "program", "procedure", "var", "int", "boolean", "read", "write", "true", 
         "false", "begin", "end", "if", "then", "else", "or", "and", "not", "div", 
         "while", "do"
     }
 
-    COMMENT_TOKENS = ["//", "{"]
+    startMultilineCommentTokens = "{"
+    endMultilineCommentTokens = "}"
+    startCommentTokens = ["//", startMultilineCommentTokens]
     
-    def __init__(self, parent: QsciLexerCustom):
+    def __init__(self, parent: QsciScintilla):
         super().__init__(parent)
-        self._initialize_styles()
+        self.initializeStyles()
 
-    def _initialize_styles(self):
-        self.setDefaultColor(ColorMapper.get_color(Colors.FOREGROUND_STYLE))
-        self.setDefaultPaper(ColorMapper.get_color(Colors.BACKGROUND_STYLE))
+    def initializeStyles(self):
+        self.setDefaultColor(ColorMapper.getColor(Colors.foregroundStyle))
+        self.setDefaultPaper(ColorMapper.getColor(Colors.backgroundStyle))
 
         for style in Colors:
-            self.setColor(ColorMapper.get_color(style), style.value)
-            self.setPaper(ColorMapper.get_color(Colors.BACKGROUND_STYLE), style.value)
+            self.setColor(ColorMapper.getColor(style), style.value)
+            self.setPaper(ColorMapper.getColor(Colors.backgroundStyle), style.value)
 
-    def description(self, style_number: int) -> str:
-        style_descriptions = {
-            Colors.PRIMARY_STYLE.value: "black",
-            Colors.SECONDARY_STYLE.value: "blue",
-            Colors.COMMENT_STYLE.value: "red"
+    def description(self, styleNumber: int) -> str:
+        styleDescriptions = {
+            Colors.primaryStyle.value: "black",
+            Colors.secondaryStyle.value: "blue",
+            Colors.commentStyle.value: "red"
         }
-        return style_descriptions.get(style_number, "")
+        return styleDescriptions.get(styleNumber, "")
 
-    def defaultFont(self, _style: int) -> QFont:
+    def defaultFont(self, style: int) -> QFont:
         return QFont("monospace", 24, QFont.Weight.Bold)
 
-    def styleText(self, _start_pos: int, _end_pos: int):
+    def styleText(self, startPos: int, endPos: int):
         self.startStyling(0)
-        text_content = self.parent().text() # type: ignore
-        token_list = [
+        textContent = self.parent().text() # type: ignore
+        tokenList = [
             (token, len(bytearray(token, "utf-8")))
-            for token in re.findall(r"\s+|\w+|\/\/|\W", text_content)
+            for token in re.findall(r"\s+|\w+|\/\/|\W", textContent)
         ]
 
-        in_comment = False
-        in_multiline_comment = False
+        inComment = False
+        inMultilineComment = False
 
-        for token, token_length in token_list:
-            if in_comment:
-                self.setStyling(token_length, Colors.COMMENT_STYLE.value)
-                if in_multiline_comment:
-                    if token == "}":
-                        in_multiline_comment = False
-                        in_comment = False
+        for token, tokenLength in tokenList:
+            if inComment:
+                self.setStyling(tokenLength, Colors.commentStyle.value)
+                if inMultilineComment:
+                    if token == self.endMultilineCommentTokens:
+                        inMultilineComment = False
+                        inComment = False
                 else:
                     if token[-1] in ["\n", "\r"]:
-                        in_comment = False
+                        inComment = False
             else:
-                if token in self.RESERVED_KEYWORDS:
-                    self.setStyling(token_length, Colors.SECONDARY_STYLE.value)
-                elif token in self.COMMENT_TOKENS:
-                    self.setStyling(token_length, Colors.COMMENT_STYLE.value)
+                if token in self.reservedKeywords:
+                    self.setStyling(tokenLength, Colors.secondaryStyle.value)
+                elif token in self.startMultilineCommentTokens:
+                    self.setStyling(tokenLength, Colors.commentStyle.value)
                     if token == "{":
-                        in_multiline_comment = True
-                    in_comment = True
+                        inMultilineComment = True
+                    inComment = True
                 else:
-                    self.setStyling(token_length, Colors.PRIMARY_STYLE.value)
+                    self.setStyling(tokenLength, Colors.primaryStyle.value)

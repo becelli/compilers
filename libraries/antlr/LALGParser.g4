@@ -16,4 +16,13 @@ simple_expression: ( SUM | SUB)? term ( ( SUM | SUB | OR) term)*;
 expression:
 	simple_expression (relation_operator simple_expression)?;
 
-variable: IDENTIFIER | IDENTIFIER expression;
+variable: IDENTIFIER expression?;
+
+variableDeclaration: type identifierList;
+
+identifierList: IDENTIFIER (COMMA IDENTIFIER)*;
+
+variableDeclarationPart:
+	variableDeclaration (SEMICOLON variableDeclaration)* SEMICOLON EOF;
+
+type: ( TYPE_BOOL | TYPE_INT);
