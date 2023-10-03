@@ -14,10 +14,10 @@ from PyQt6.QtWidgets import (
 )
 from antlr4 import CommonTokenStream, InputStream
 
-from compiler.ErrorListener import ErrorListener
-from compiler.LangLexer import LangLexer
-from compiler.LangParser import LangParser
 from frontend.custom_lexer import CustomLexer
+from libraries.antlr.LALGErrorListener import LALGErrorListener
+from libraries.antlr.LALGLexer import LALGLexer
+from libraries.antlr.LALGParser import LALGParser
 
 class ApplicationWidget(QWidget):
     def __init__(self):
@@ -113,7 +113,7 @@ class ApplicationWidget(QWidget):
     def lex(self):
         """Lexical analysis of the code."""
         stream = InputStream(self.code)
-        lexer = LangLexer(stream)
+        lexer = LALGLexer(stream)
         tokens = lexer.getAllTokens()
 
         token_list = [
@@ -133,13 +133,13 @@ class ApplicationWidget(QWidget):
     def syntaxAnalysis(self):
         """Syntactical analysis of the code."""
         input_stream = InputStream(self.code)
-        lexer = LangLexer(input_stream)
+        lexer = LALGLexer(input_stream)
         token_stream = CommonTokenStream(lexer)
-        parser = LangParser(token_stream)
+        parser = LALGParser(token_stream)
         
         parser.removeErrorListeners()
-        parser.addErrorListener(ErrorListener())
-        parser.variavel()
+        parser.addErrorListener(LALGErrorListener())
+        parser.variable()
         
         # TODO: retornar erros no parser
         # errors = parser.getErrors()

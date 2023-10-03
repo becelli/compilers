@@ -1,4 +1,4 @@
-# Generated from libraries/antlr/lalg_parser.g4 by ANTLR 4.13.1
+# Generated from libraries/antlr/LALGParser.g4 by ANTLR 4.13.1
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
@@ -31,9 +31,9 @@ def serializedATN():
         0,56,54,1,0,0,0,57,13,1,0,0,0,6,26,33,37,44,51,56
     ]
 
-class lalg_parser ( Parser ):
+class LALGParser ( Parser ):
 
-    grammarFileName = "lalg_parser.g4"
+    grammarFileName = "LALGParser.g4"
 
     atn = ATNDeserializer().deserialize(serializedATN())
 
@@ -136,13 +136,13 @@ class lalg_parser ( Parser ):
             self.parser = parser
 
         def INT(self):
-            return self.getToken(lalg_parser.INT, 0)
+            return self.getToken(LALGParser.INT, 0)
 
         def REAL(self):
-            return self.getToken(lalg_parser.REAL, 0)
+            return self.getToken(LALGParser.REAL, 0)
 
         def getRuleIndex(self):
-            return lalg_parser.RULE_number
+            return LALGParser.RULE_number
 
         def enterRule(self, listener:ParseTreeListener):
             if hasattr( listener, "enterNumber" ):
@@ -157,7 +157,7 @@ class lalg_parser ( Parser ):
 
     def number(self):
 
-        localctx = lalg_parser.NumberContext(self, self._ctx, self.state)
+        localctx = LALGParser.NumberContext(self, self._ctx, self.state)
         self.enterRule(localctx, 0, self.RULE_number)
         self._la = 0 # Token type
         try:
@@ -186,25 +186,25 @@ class lalg_parser ( Parser ):
             self.parser = parser
 
         def EQUAL(self):
-            return self.getToken(lalg_parser.EQUAL, 0)
+            return self.getToken(LALGParser.EQUAL, 0)
 
         def DIFF(self):
-            return self.getToken(lalg_parser.DIFF, 0)
+            return self.getToken(LALGParser.DIFF, 0)
 
         def LT(self):
-            return self.getToken(lalg_parser.LT, 0)
+            return self.getToken(LALGParser.LT, 0)
 
         def LTE(self):
-            return self.getToken(lalg_parser.LTE, 0)
+            return self.getToken(LALGParser.LTE, 0)
 
         def GT(self):
-            return self.getToken(lalg_parser.GT, 0)
+            return self.getToken(LALGParser.GT, 0)
 
         def GTE(self):
-            return self.getToken(lalg_parser.GTE, 0)
+            return self.getToken(LALGParser.GTE, 0)
 
         def getRuleIndex(self):
-            return lalg_parser.RULE_relation_operator
+            return LALGParser.RULE_relation_operator
 
         def enterRule(self, listener:ParseTreeListener):
             if hasattr( listener, "enterRelation_operator" ):
@@ -219,7 +219,7 @@ class lalg_parser ( Parser ):
 
     def relation_operator(self):
 
-        localctx = lalg_parser.Relation_operatorContext(self, self._ctx, self.state)
+        localctx = LALGParser.Relation_operatorContext(self, self._ctx, self.state)
         self.enterRule(localctx, 2, self.RULE_relation_operator)
         self._la = 0 # Token type
         try:
@@ -248,32 +248,32 @@ class lalg_parser ( Parser ):
             self.parser = parser
 
         def variable(self):
-            return self.getTypedRuleContext(lalg_parser.VariableContext,0)
+            return self.getTypedRuleContext(LALGParser.VariableContext,0)
 
 
         def number(self):
-            return self.getTypedRuleContext(lalg_parser.NumberContext,0)
+            return self.getTypedRuleContext(LALGParser.NumberContext,0)
 
 
         def LP(self):
-            return self.getToken(lalg_parser.LP, 0)
+            return self.getToken(LALGParser.LP, 0)
 
         def expression(self):
-            return self.getTypedRuleContext(lalg_parser.ExpressionContext,0)
+            return self.getTypedRuleContext(LALGParser.ExpressionContext,0)
 
 
         def RP(self):
-            return self.getToken(lalg_parser.RP, 0)
+            return self.getToken(LALGParser.RP, 0)
 
         def NOT(self):
-            return self.getToken(lalg_parser.NOT, 0)
+            return self.getToken(LALGParser.NOT, 0)
 
         def factor(self):
-            return self.getTypedRuleContext(lalg_parser.FactorContext,0)
+            return self.getTypedRuleContext(LALGParser.FactorContext,0)
 
 
         def getRuleIndex(self):
-            return lalg_parser.RULE_factor
+            return LALGParser.RULE_factor
 
         def enterRule(self, listener:ParseTreeListener):
             if hasattr( listener, "enterFactor" ):
@@ -288,7 +288,7 @@ class lalg_parser ( Parser ):
 
     def factor(self):
 
-        localctx = lalg_parser.FactorContext(self, self._ctx, self.state)
+        localctx = LALGParser.FactorContext(self, self._ctx, self.state)
         self.enterRule(localctx, 4, self.RULE_factor)
         try:
             self.state = 26
@@ -307,16 +307,16 @@ class lalg_parser ( Parser ):
             elif token in [36]:
                 self.enterOuterAlt(localctx, 3)
                 self.state = 20
-                self.match(lalg_parser.LP)
+                self.match(LALGParser.LP)
                 self.state = 21
                 self.expression()
                 self.state = 22
-                self.match(lalg_parser.RP)
+                self.match(LALGParser.RP)
                 pass
             elif token in [25]:
                 self.enterOuterAlt(localctx, 4)
                 self.state = 24
-                self.match(lalg_parser.NOT)
+                self.match(LALGParser.NOT)
                 self.state = 25
                 self.factor()
                 pass
@@ -341,31 +341,31 @@ class lalg_parser ( Parser ):
 
         def factor(self, i:int=None):
             if i is None:
-                return self.getTypedRuleContexts(lalg_parser.FactorContext)
+                return self.getTypedRuleContexts(LALGParser.FactorContext)
             else:
-                return self.getTypedRuleContext(lalg_parser.FactorContext,i)
+                return self.getTypedRuleContext(LALGParser.FactorContext,i)
 
 
         def MUL(self, i:int=None):
             if i is None:
-                return self.getTokens(lalg_parser.MUL)
+                return self.getTokens(LALGParser.MUL)
             else:
-                return self.getToken(lalg_parser.MUL, i)
+                return self.getToken(LALGParser.MUL, i)
 
         def INT_DIV(self, i:int=None):
             if i is None:
-                return self.getTokens(lalg_parser.INT_DIV)
+                return self.getTokens(LALGParser.INT_DIV)
             else:
-                return self.getToken(lalg_parser.INT_DIV, i)
+                return self.getToken(LALGParser.INT_DIV, i)
 
         def AND(self, i:int=None):
             if i is None:
-                return self.getTokens(lalg_parser.AND)
+                return self.getTokens(LALGParser.AND)
             else:
-                return self.getToken(lalg_parser.AND, i)
+                return self.getToken(LALGParser.AND, i)
 
         def getRuleIndex(self):
-            return lalg_parser.RULE_term
+            return LALGParser.RULE_term
 
         def enterRule(self, listener:ParseTreeListener):
             if hasattr( listener, "enterTerm" ):
@@ -380,7 +380,7 @@ class lalg_parser ( Parser ):
 
     def term(self):
 
-        localctx = lalg_parser.TermContext(self, self._ctx, self.state)
+        localctx = LALGParser.TermContext(self, self._ctx, self.state)
         self.enterRule(localctx, 6, self.RULE_term)
         self._la = 0 # Token type
         try:
@@ -423,31 +423,31 @@ class lalg_parser ( Parser ):
 
         def term(self, i:int=None):
             if i is None:
-                return self.getTypedRuleContexts(lalg_parser.TermContext)
+                return self.getTypedRuleContexts(LALGParser.TermContext)
             else:
-                return self.getTypedRuleContext(lalg_parser.TermContext,i)
+                return self.getTypedRuleContext(LALGParser.TermContext,i)
 
 
         def SUM(self, i:int=None):
             if i is None:
-                return self.getTokens(lalg_parser.SUM)
+                return self.getTokens(LALGParser.SUM)
             else:
-                return self.getToken(lalg_parser.SUM, i)
+                return self.getToken(LALGParser.SUM, i)
 
         def SUB(self, i:int=None):
             if i is None:
-                return self.getTokens(lalg_parser.SUB)
+                return self.getTokens(LALGParser.SUB)
             else:
-                return self.getToken(lalg_parser.SUB, i)
+                return self.getToken(LALGParser.SUB, i)
 
         def OR(self, i:int=None):
             if i is None:
-                return self.getTokens(lalg_parser.OR)
+                return self.getTokens(LALGParser.OR)
             else:
-                return self.getToken(lalg_parser.OR, i)
+                return self.getToken(LALGParser.OR, i)
 
         def getRuleIndex(self):
-            return lalg_parser.RULE_simple_expression
+            return LALGParser.RULE_simple_expression
 
         def enterRule(self, listener:ParseTreeListener):
             if hasattr( listener, "enterSimple_expression" ):
@@ -462,7 +462,7 @@ class lalg_parser ( Parser ):
 
     def simple_expression(self):
 
-        localctx = lalg_parser.Simple_expressionContext(self, self._ctx, self.state)
+        localctx = LALGParser.Simple_expressionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 8, self.RULE_simple_expression)
         self._la = 0 # Token type
         try:
@@ -518,17 +518,17 @@ class lalg_parser ( Parser ):
 
         def simple_expression(self, i:int=None):
             if i is None:
-                return self.getTypedRuleContexts(lalg_parser.Simple_expressionContext)
+                return self.getTypedRuleContexts(LALGParser.Simple_expressionContext)
             else:
-                return self.getTypedRuleContext(lalg_parser.Simple_expressionContext,i)
+                return self.getTypedRuleContext(LALGParser.Simple_expressionContext,i)
 
 
         def relation_operator(self):
-            return self.getTypedRuleContext(lalg_parser.Relation_operatorContext,0)
+            return self.getTypedRuleContext(LALGParser.Relation_operatorContext,0)
 
 
         def getRuleIndex(self):
-            return lalg_parser.RULE_expression
+            return LALGParser.RULE_expression
 
         def enterRule(self, listener:ParseTreeListener):
             if hasattr( listener, "enterExpression" ):
@@ -543,7 +543,7 @@ class lalg_parser ( Parser ):
 
     def expression(self):
 
-        localctx = lalg_parser.ExpressionContext(self, self._ctx, self.state)
+        localctx = LALGParser.ExpressionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 10, self.RULE_expression)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -576,14 +576,14 @@ class lalg_parser ( Parser ):
             self.parser = parser
 
         def IDENTIFIER(self):
-            return self.getToken(lalg_parser.IDENTIFIER, 0)
+            return self.getToken(LALGParser.IDENTIFIER, 0)
 
         def expression(self):
-            return self.getTypedRuleContext(lalg_parser.ExpressionContext,0)
+            return self.getTypedRuleContext(LALGParser.ExpressionContext,0)
 
 
         def getRuleIndex(self):
-            return lalg_parser.RULE_variable
+            return LALGParser.RULE_variable
 
         def enterRule(self, listener:ParseTreeListener):
             if hasattr( listener, "enterVariable" ):
@@ -598,7 +598,7 @@ class lalg_parser ( Parser ):
 
     def variable(self):
 
-        localctx = lalg_parser.VariableContext(self, self._ctx, self.state)
+        localctx = LALGParser.VariableContext(self, self._ctx, self.state)
         self.enterRule(localctx, 12, self.RULE_variable)
         try:
             self.state = 56
@@ -607,13 +607,13 @@ class lalg_parser ( Parser ):
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 53
-                self.match(lalg_parser.IDENTIFIER)
+                self.match(LALGParser.IDENTIFIER)
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
                 self.state = 54
-                self.match(lalg_parser.IDENTIFIER)
+                self.match(LALGParser.IDENTIFIER)
                 self.state = 55
                 self.expression()
                 pass

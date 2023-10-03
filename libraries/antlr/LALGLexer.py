@@ -1,4 +1,4 @@
-# Generated from libraries/antlr/lalg_lexer.g4 by ANTLR 4.13.1
+# Generated from libraries/antlr/LALGLexer.g4 by ANTLR 4.13.1
 from antlr4 import *
 from io import StringIO
 import sys
@@ -120,7 +120,7 @@ def serializedATN():
         254,260,265,271,279,288,298,305,1,6,0,0
     ]
 
-class lalg_lexer(Lexer):
+class LALGLexer(Lexer):
 
     atn = ATNDeserializer().deserialize(serializedATN())
 
@@ -204,7 +204,7 @@ class lalg_lexer(Lexer):
                   "IDENTIFIER", "INT", "REAL", "COMMENT", "MULTILINE_COMMENT", 
                   "WS", "INVALID_TOKEN", "INVALID" ]
 
-    grammarFileName = "lalg_lexer.g4"
+    grammarFileName = "LALGLexer.g4"
 
     def __init__(self, input=None, output:TextIO = sys.stdout):
         super().__init__(input, output)

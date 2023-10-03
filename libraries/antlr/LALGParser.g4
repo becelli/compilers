@@ -1,6 +1,6 @@
-parser grammar lalg_parser;
+parser grammar LALGParser;
 options {
-	tokenVocab = lalg_lexer;
+	tokenVocab = LALGLexer;
 }
 
 number: INT | REAL;

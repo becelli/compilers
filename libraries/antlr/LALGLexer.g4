@@ -1,4 +1,4 @@
-lexer grammar lalg_lexer;
+lexer grammar LALGLexer;
 
 // Keywords
 PROGRAM: 'program';
