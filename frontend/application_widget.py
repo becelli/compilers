@@ -139,9 +139,10 @@ class ApplicationWidget(QWidget):
         
         parser.removeErrorListeners()
         parser.addErrorListener(ErrorListener())
-        parser.programa()
+        parser.variavel()
         
-        errors = parser.getErrors()
+        # TODO: retornar erros no parser
+        # errors = parser.getErrors()
         self.sinOutput.clear()
-        for error in errors:
-            self.sinOutput.append(error)
+        # for error in errors:
+        #     self.sinOutput.append(error)
