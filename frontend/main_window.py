@@ -9,20 +9,22 @@ from frontend.application_widget import ApplicationWidget
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Zombielers Desktop")
-        self.setWindowState(Qt.WindowState.WindowMaximized)
+        self._setupMainWindow()
         self.centralWidget: QWidget = QWidget(self)
         self.setCentralWidget(self.centralWidget)
         self.centralLayout = QVBoxLayout(self.centralWidget)
         self._setupNavBar()
         self._setupMainWidget()
+        self._setupActions()
+
+    def _setupMainWindow(self):
+        self.setWindowTitle("Zombielers Desktop")
+        self.setWindowState(Qt.WindowState.WindowMaximized)
 
     def _setupNavBar(self):
         self.navBarLayout = QHBoxLayout()
         self.openFileButton = QPushButton("Open file")
-        self.openFileButton.clicked.connect(self.openFile)
         self.saveFileButton = QPushButton("Save file")
-        self.saveFileButton.clicked.connect(self.saveFile)
         self.navBarLayout.addWidget(self.openFileButton)
         self.navBarLayout.addWidget(self.saveFileButton)
         self.navBarLayout.addStretch()
@@ -44,6 +46,15 @@ class MainWindow(QMainWindow):
         self.mainWidget = ApplicationWidget()
         self.centralLayout.addWidget(self.mainWidget)
 
+    def _setupActions(self):
+        self.openFileButton.clicked.connect(self.openFile)
+        self.saveFileButton.clicked.connect(self.saveFile)
+        self.doAnalysisButton.clicked.connect(self.mainWidget.analyze)
+        self.toggleLexerButton.clicked.connect(self.mainWidget.toggleLexer)
+        self.toggleParserButton.clicked.connect(self.mainWidget.toggleSyntax)
+        self.toggleSemanticButton.clicked.connect(
+            self.mainWidget.toggleSemantic)
+
     def openFile(self):
         fileName, _ = QFileDialog.getOpenFileName(
             self, "Abrir arquivo", "", "Arquivo de texto (*.txt)")
@@ -57,5 +68,4 @@ class MainWindow(QMainWindow):
             self, "Salvar arquivo", "", "Arquivo de texto (*.txt)")
         if fileName:
             with open(fileName, "w") as file:
-                pass
-                # file.write(self.mainWidget.code())
+                file.write(self.mainWidget.code())

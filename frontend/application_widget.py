@@ -30,11 +30,11 @@ class Analyser(enum.Enum):
 class ApplicationWidget(QWidget):
     def __init__(self):
         super().__init__()
-        self.currentAnalyser = Analyser.LEXER
         self._setupMainLayout()
         self._setupEditor()
-        self._setupTable()
+        self._setupTableLexer()
         self._setupOutputs()
+        self._updateLabel(Analyser.LEXER)
 
     def _setupMainLayout(self):
         self.editorLayout = QVBoxLayout()
@@ -55,7 +55,7 @@ class ApplicationWidget(QWidget):
         self.textEditor.setMarginsFont(font)
         self.editorLayout.addWidget(self.textEditor)
 
-    def _setupTable(self):
+    def _setupTableLexer(self):
         self.table = QTableWidget(1, 5, self)
         horizontalHeader = self.table.horizontalHeader()
         if horizontalHeader is not None:
@@ -72,7 +72,8 @@ class ApplicationWidget(QWidget):
     def _setupOutputs(self):
         self.errTitle = QLabel()
         self.errOutput = self._createOutput()
-        self.errorLayout = self._createOutputLayout(self.errTitle, self.errOutput)
+        self.errorLayout = self._createOutputLayout(
+            self.errTitle, self.errOutput)
         self.tableAndErrorsLayout.addLayout(self.errorLayout)
 
     def _createOutput(self):
@@ -113,9 +114,9 @@ class ApplicationWidget(QWidget):
             for token in tokens
         ]
 
-        self.__updateTable(token_list)
+        self._updateLexerTable(token_list)
 
-    def __updateTable(self, token_list):
+    def _updateLexerTable(self, token_list):
         self.table.setRowCount(len(token_list))
         for i, token in enumerate(token_list):
             for j, value in enumerate(token):
@@ -137,12 +138,20 @@ class ApplicationWidget(QWidget):
         for error in errors:
             self.sinOutput.append(error)
 
-    def __updateLayout(self):
-        self.__updateLabel()
-        self.__updateTable()
+    def toggleLexer(self):
+        self._updateLabel(Analyser.LEXER)
 
-    def __updateLabel(self):
-        # Match current analyser to the label
-        match self.currentAnalyser:
+    def toggleSyntax(self):
+        self._updateLabel(Analyser.SYNTAX)
+
+    def toggleSemantic(self):
+        self._updateLabel(Analyser.SEMANTIC)
+
+    def _updateLabel(self, analyser: Analyser = Analyser.LEXER):
+        match analyser:
             case Analyser.LEXER:
-                self.
+                self.errTitle.setText("Lexer Errors")
+            case Analyser.SYNTAX:
+                self.errTitle.setText("Syntax Errors")
+            case Analyser.SEMANTIC:
+                self.errTitle.setText("Semantic Errors")
