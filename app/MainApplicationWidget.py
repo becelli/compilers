@@ -1,4 +1,5 @@
 import enum
+
 from PyQt6.Qsci import QsciScintilla
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
@@ -14,29 +15,24 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 from antlr4 import CommonTokenStream, InputStream
+from app.entities.CompilerSteps import CompilerSteps
 
-from frontend.custom_lexer import CustomLexer
+from app.lexer.CustomLexer import CustomLexer
 from libraries.antlr.LALGErrorListener import LALGErrorListener
 from libraries.antlr.LALGLexer import LALGLexer
 from libraries.antlr.LALGParser import LALGParser
 
 
-class Analyser(enum.Enum):
-    LEXER = "lexer"
-    SYNTAX = "syntax"
-    SEMANTIC = "semantic"
-
-
-class ApplicationWidget(QWidget):
+class MainApplicationWidget(QWidget):
     def __init__(self):
         super().__init__()
-        self._setupMainLayout()
-        self._setupEditor()
-        self._setupTableLexer()
-        self._setupOutputs()
-        self._updateLabel(Analyser.LEXER)
+        self.setupMainLayout()
+        self.setupEditor()
+        self.setupOutputs()
+        self.setupTableLexer()
+        self.toggleLexer()
 
-    def _setupMainLayout(self):
+    def setupMainLayout(self):
         self.editorLayout = QVBoxLayout()
         self.tableAndErrorsLayout = QVBoxLayout()
         self.mainLayout = QHBoxLayout()
@@ -44,7 +40,7 @@ class ApplicationWidget(QWidget):
         self.mainLayout.addLayout(self.tableAndErrorsLayout)
         self.setLayout(self.mainLayout)
 
-    def _setupEditor(self):
+    def setupEditor(self):
         self.textEditor = QsciScintilla(self)
         lexerElement = CustomLexer(self.textEditor)
         self.textEditor.setLexer(lexerElement)
@@ -55,7 +51,7 @@ class ApplicationWidget(QWidget):
         self.textEditor.setMarginsFont(font)
         self.editorLayout.addWidget(self.textEditor)
 
-    def _setupTableLexer(self):
+    def setupTableLexer(self):
         self.table = QTableWidget(1, 5, self)
         horizontalHeader = self.table.horizontalHeader()
         if horizontalHeader is not None:
@@ -67,22 +63,20 @@ class ApplicationWidget(QWidget):
         self.table.setSelectionBehavior(
             QTableWidget.SelectionBehavior.SelectRows)
 
-        self.tableAndErrorsLayout.addWidget(self.table)
+        self.tableAndErrorsLayout.addWidget(self.table)        
 
-    def _setupOutputs(self):
+    def setupOutputs(self):
         self.errTitle = QLabel()
-        self.errOutput = self._createOutput()
-        self.errorLayout = self._createOutputLayout(
-            self.errTitle, self.errOutput)
+        self.outputError = self.createOutput()
+        self.errorLayout = self.createOutputLayout(self.errTitle, self.outputError)
         self.tableAndErrorsLayout.addLayout(self.errorLayout)
 
-    def _createOutput(self):
+    def createOutput(self):
         output = QTextEdit()
         output.setReadOnly(True)
-        output.setFixedHeight(100)
         return output
 
-    def _createOutputLayout(self, title, output):
+    def createOutputLayout(self, title, output):
         layout = QVBoxLayout()
         layout.addStretch()
         layout.addWidget(title)
@@ -96,13 +90,7 @@ class ApplicationWidget(QWidget):
     def code(self) -> str:
         return self.textEditor.text()
 
-    def analyze(self):
-        """Analyze the current code."""
-        self.lex()
-        self.syntaxAnalysis()
-
     def lex(self):
-        """Lexical analysis of the code."""
         stream = InputStream(self.code)
         lexer = LALGLexer(stream)
         tokens = lexer.getAllTokens()
@@ -113,44 +101,50 @@ class ApplicationWidget(QWidget):
             for token in tokens
         ]
 
-        self._updateLexerTable(token_list)
+        self.updateLexerTable(token_list)
 
-    def _updateLexerTable(self, token_list):
+    def updateLexerTable(self, token_list):
         self.table.setRowCount(len(token_list))
-        for i, token in enumerate(token_list):
-            for j, value in enumerate(token):
-                self.table.setItem(i, j, QTableWidgetItem(str(value)))
+        for row, token in enumerate(token_list):
+            for col, value in enumerate(token):
+                self.table.setItem(row, col, QTableWidgetItem(str(value)))
+
+    def analyze(self):
+        self.lex()
+        self.syntaxAnalysis()
 
     def syntaxAnalysis(self):
-        """Syntactical analysis of the code."""
         input_stream = InputStream(self.code)
         lexer = LALGLexer(input_stream)
         token_stream = CommonTokenStream(lexer)
         parser = LALGParser(token_stream)
 
+        listener = LALGErrorListener()
         parser.removeErrorListeners()
-        parser.addErrorListener(LALGErrorListener())
+        parser.addErrorListener(listener)
+
         parser.variable()
 
-        errors = parser.getErrors()
-        self.errOutput.clear()
+        errors = listener.getErrors()
+        self.outputError.clear()
         for error in errors:
-            self.errOutput.append(error)
+            self.outputError.append(error)
+        
 
     def toggleLexer(self):
-        self._updateLabel(Analyser.LEXER)
+        self.updateLabel(CompilerSteps.LEXER)
 
     def toggleSyntax(self):
-        self._updateLabel(Analyser.SYNTAX)
+        self.updateLabel(CompilerSteps.SYNTAX)
 
     def toggleSemantic(self):
-        self._updateLabel(Analyser.SEMANTIC)
+        self.updateLabel(CompilerSteps.SEMANTIC)
 
-    def _updateLabel(self, analyser: Analyser = Analyser.LEXER):
-        match analyser:
-            case Analyser.LEXER:
+    def updateLabel(self, CompilerSteps: CompilerSteps = CompilerSteps.LEXER):
+        match CompilerSteps:
+            case CompilerSteps.LEXER:
                 self.errTitle.setText("Lexer Errors")
-            case Analyser.SYNTAX:
+            case CompilerSteps.SYNTAX:
                 self.errTitle.setText("Syntax Errors")
-            case Analyser.SEMANTIC:
+            case CompilerSteps.SEMANTIC:
                 self.errTitle.setText("Semantic Errors")

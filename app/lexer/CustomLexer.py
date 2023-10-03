@@ -1,29 +1,10 @@
-from dataclasses import dataclass
-from enum import Enum
 import re
 
 from PyQt6.Qsci import QsciLexerCustom, QsciScintilla
-from PyQt6.QtGui import QColor, QFont
+from PyQt6.QtGui import QFont
 
-class Colors(Enum):
-    primaryStyle = 0
-    secondaryStyle = 1
-    commentStyle = 2
-    backgroundStyle = 3
-    foregroundStyle = 4
-
-@dataclass
-class ColorMapper:
-    @staticmethod
-    def getColor(style: Colors) -> QColor:
-        mapper = {
-            Colors.primaryStyle.value: QColor("#f8f8f2"),
-            Colors.secondaryStyle.value: QColor("#ff79c6"),
-            Colors.commentStyle.value: QColor("#6272a4"),
-            Colors.backgroundStyle.value: QColor("#282a36"),
-            Colors.foregroundStyle.value: QColor("#f8f8f2")
-        }
-        return mapper[style.value]
+from app.lexer.ColorMapper import ColorMapper
+from app.lexer.Colors import Colors
 
 
 class CustomLexer(QsciLexerCustom):
