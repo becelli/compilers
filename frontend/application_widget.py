@@ -97,10 +97,9 @@ class ApplicationWidget(QWidget):
         return self.textEditor.text()
 
     def analyze(self):
-        pass
         """Analyze the current code."""
-        # self.lex()
-        # self.syntaxAnalysis()
+        self.lex()
+        self.syntaxAnalysis()
 
     def lex(self):
         """Lexical analysis of the code."""
@@ -133,10 +132,10 @@ class ApplicationWidget(QWidget):
         parser.addErrorListener(LALGErrorListener())
         parser.variable()
 
-        # errors = parser.getErrors()
-        self.sinOutput.clear()
+        errors = parser.getErrors()
+        self.errOutput.clear()
         for error in errors:
-            self.sinOutput.append(error)
+            self.errOutput.append(error)
 
     def toggleLexer(self):
         self._updateLabel(Analyser.LEXER)
