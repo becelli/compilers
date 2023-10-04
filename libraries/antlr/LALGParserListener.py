@@ -8,66 +8,57 @@ else:
 # This class defines a complete listener for a parse tree produced by LALGParser.
 class LALGParserListener(ParseTreeListener):
 
-    # Enter a parse tree produced by LALGParser#number.
-    def enterNumber(self, ctx:LALGParser.NumberContext):
+    # Enter a parse tree produced by LALGParser#program.
+    def enterProgram(self, ctx:LALGParser.ProgramContext):
         pass
 
-    # Exit a parse tree produced by LALGParser#number.
-    def exitNumber(self, ctx:LALGParser.NumberContext):
-        pass
-
-
-    # Enter a parse tree produced by LALGParser#relation_operator.
-    def enterRelation_operator(self, ctx:LALGParser.Relation_operatorContext):
-        pass
-
-    # Exit a parse tree produced by LALGParser#relation_operator.
-    def exitRelation_operator(self, ctx:LALGParser.Relation_operatorContext):
+    # Exit a parse tree produced by LALGParser#program.
+    def exitProgram(self, ctx:LALGParser.ProgramContext):
         pass
 
 
-    # Enter a parse tree produced by LALGParser#factor.
-    def enterFactor(self, ctx:LALGParser.FactorContext):
+    # Enter a parse tree produced by LALGParser#block.
+    def enterBlock(self, ctx:LALGParser.BlockContext):
         pass
 
-    # Exit a parse tree produced by LALGParser#factor.
-    def exitFactor(self, ctx:LALGParser.FactorContext):
-        pass
-
-
-    # Enter a parse tree produced by LALGParser#term.
-    def enterTerm(self, ctx:LALGParser.TermContext):
-        pass
-
-    # Exit a parse tree produced by LALGParser#term.
-    def exitTerm(self, ctx:LALGParser.TermContext):
+    # Exit a parse tree produced by LALGParser#block.
+    def exitBlock(self, ctx:LALGParser.BlockContext):
         pass
 
 
-    # Enter a parse tree produced by LALGParser#simple_expression.
-    def enterSimple_expression(self, ctx:LALGParser.Simple_expressionContext):
+    # Enter a parse tree produced by LALGParser#variableDeclarationSection.
+    def enterVariableDeclarationSection(self, ctx:LALGParser.VariableDeclarationSectionContext):
         pass
 
-    # Exit a parse tree produced by LALGParser#simple_expression.
-    def exitSimple_expression(self, ctx:LALGParser.Simple_expressionContext):
-        pass
-
-
-    # Enter a parse tree produced by LALGParser#expression.
-    def enterExpression(self, ctx:LALGParser.ExpressionContext):
-        pass
-
-    # Exit a parse tree produced by LALGParser#expression.
-    def exitExpression(self, ctx:LALGParser.ExpressionContext):
+    # Exit a parse tree produced by LALGParser#variableDeclarationSection.
+    def exitVariableDeclarationSection(self, ctx:LALGParser.VariableDeclarationSectionContext):
         pass
 
 
-    # Enter a parse tree produced by LALGParser#variable.
-    def enterVariable(self, ctx:LALGParser.VariableContext):
+    # Enter a parse tree produced by LALGParser#variableDeclaration.
+    def enterVariableDeclaration(self, ctx:LALGParser.VariableDeclarationContext):
         pass
 
-    # Exit a parse tree produced by LALGParser#variable.
-    def exitVariable(self, ctx:LALGParser.VariableContext):
+    # Exit a parse tree produced by LALGParser#variableDeclaration.
+    def exitVariableDeclaration(self, ctx:LALGParser.VariableDeclarationContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#type.
+    def enterType(self, ctx:LALGParser.TypeContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#type.
+    def exitType(self, ctx:LALGParser.TypeContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#identifierList.
+    def enterIdentifierList(self, ctx:LALGParser.IdentifierListContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#identifierList.
+    def exitIdentifierList(self, ctx:LALGParser.IdentifierListContext):
         pass
 
 

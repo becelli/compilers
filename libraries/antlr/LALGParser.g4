@@ -3,26 +3,16 @@ options {
 	tokenVocab = LALGLexer;
 }
 
-number: INT | REAL;
+program: PROGRAM IDENTIFIER SEMICOLON block DOT;
 
-relation_operator: EQUAL | DIFF | LT | LTE | GT | GTE;
+block: variableDeclarationSection;
 
-factor: variable | number | LP expression RP | NOT factor;
-
-term: factor ( ( MUL | INT_DIV | AND) factor)*;
-
-simple_expression: ( SUM | SUB)? term ( ( SUM | SUB | OR) term)*;
-
-expression:
-	simple_expression (relation_operator simple_expression)?;
-
-variable: IDENTIFIER expression?;
+variableDeclarationSection:
+	variableDeclaration (SEMICOLON variableDeclaration)* SEMICOLON EOF;
 
 variableDeclaration: type identifierList;
 
+type: (TYPE_BOOL | TYPE_INT);
+
 identifierList: IDENTIFIER (COMMA IDENTIFIER)*;
 
-variableDeclarationPart:
-	variableDeclaration (SEMICOLON variableDeclaration)* SEMICOLON EOF;
-
-type: ( TYPE_BOOL | TYPE_INT);

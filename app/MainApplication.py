@@ -1,10 +1,12 @@
 from re import I
+import re
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QFileDialog,
     QHBoxLayout,
     QMainWindow,
+    QMessageBox,
     QPushButton,
     QVBoxLayout,
     QWidget,
@@ -63,16 +65,27 @@ class MainApplication(QMainWindow):
         self.toggleSemanticButton.clicked.connect(self.mainWidget.toggleSemantic)
 
     def openFile(self):
-        fileName, _ = QFileDialog.getOpenFileName(
-            self, "Abrir arquivo", "", "Arquivo de texto (*.txt)")
-        if fileName:
-            with open(fileName, "r") as file:
-                text = file.read()
-                self.mainWidget.setCode(text)
+        fileName, _ = QFileDialog.getOpenFileName(self, "Open", "", "Text files (*.txt)")
+        if not fileName:
+            messageBox = QMessageBox()
+            messageBox.setWindowTitle("Warning")
+            messageBox.setText("File not opened")
+            messageBox.exec()
+            return
+
+        with open(fileName, "r") as file:
+            text = file.read()
+            self.mainWidget.setCode(text)
 
     def saveFile(self):
-        fileName, _ = QFileDialog.getSaveFileName(
-            self, "Salvar arquivo", "", "Arquivo de texto (*.txt)")
-        if fileName:
-            with open(fileName, "w") as file:
-                file.write(self.mainWidget.code)
+        fileName, _ = QFileDialog.getSaveFileName(self, "Save", "", "Text files (*.txt)")
+        if not fileName:
+            # send warning to user with QMessageBox
+            messageBox = QMessageBox()
+            messageBox.setWindowTitle("Warning")
+            messageBox.setText("File not saved")
+            messageBox.exec()
+            return
+            
+        with open(fileName, "w") as file:
+            file.write(self.mainWidget.code)

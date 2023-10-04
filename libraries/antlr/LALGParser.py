@@ -10,25 +10,19 @@ else:
 
 def serializedATN():
     return [
-        4,1,47,59,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
-        6,1,0,1,0,1,1,1,1,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,3,2,27,8,2,1,3,
-        1,3,1,3,5,3,32,8,3,10,3,12,3,35,9,3,1,4,3,4,38,8,4,1,4,1,4,1,4,5,
-        4,43,8,4,10,4,12,4,46,9,4,1,5,1,5,1,5,1,5,3,5,52,8,5,1,6,1,6,1,6,
-        3,6,57,8,6,1,6,0,0,7,0,2,4,6,8,10,12,0,5,1,0,41,42,1,0,26,31,3,0,
-        20,20,22,22,24,24,1,0,18,19,2,0,18,19,23,23,59,0,14,1,0,0,0,2,16,
-        1,0,0,0,4,26,1,0,0,0,6,28,1,0,0,0,8,37,1,0,0,0,10,47,1,0,0,0,12,
-        56,1,0,0,0,14,15,7,0,0,0,15,1,1,0,0,0,16,17,7,1,0,0,17,3,1,0,0,0,
-        18,27,3,12,6,0,19,27,3,0,0,0,20,21,5,36,0,0,21,22,3,10,5,0,22,23,
-        5,37,0,0,23,27,1,0,0,0,24,25,5,25,0,0,25,27,3,4,2,0,26,18,1,0,0,
-        0,26,19,1,0,0,0,26,20,1,0,0,0,26,24,1,0,0,0,27,5,1,0,0,0,28,33,3,
-        4,2,0,29,30,7,2,0,0,30,32,3,4,2,0,31,29,1,0,0,0,32,35,1,0,0,0,33,
-        31,1,0,0,0,33,34,1,0,0,0,34,7,1,0,0,0,35,33,1,0,0,0,36,38,7,3,0,
-        0,37,36,1,0,0,0,37,38,1,0,0,0,38,39,1,0,0,0,39,44,3,6,3,0,40,41,
-        7,4,0,0,41,43,3,6,3,0,42,40,1,0,0,0,43,46,1,0,0,0,44,42,1,0,0,0,
-        44,45,1,0,0,0,45,9,1,0,0,0,46,44,1,0,0,0,47,51,3,8,4,0,48,49,3,2,
-        1,0,49,50,3,8,4,0,50,52,1,0,0,0,51,48,1,0,0,0,51,52,1,0,0,0,52,11,
-        1,0,0,0,53,57,5,40,0,0,54,55,5,40,0,0,55,57,3,10,5,0,56,53,1,0,0,
-        0,56,54,1,0,0,0,57,13,1,0,0,0,6,26,33,37,44,51,56
+        4,1,47,45,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,1,0,1,
+        0,1,0,1,0,1,0,1,0,1,1,1,1,1,2,1,2,1,2,5,2,24,8,2,10,2,12,2,27,9,
+        2,1,2,1,2,1,2,1,3,1,3,1,3,1,4,1,4,1,5,1,5,1,5,5,5,40,8,5,10,5,12,
+        5,43,9,5,1,5,0,0,6,0,2,4,6,8,10,0,1,1,0,4,5,40,0,12,1,0,0,0,2,18,
+        1,0,0,0,4,20,1,0,0,0,6,31,1,0,0,0,8,34,1,0,0,0,10,36,1,0,0,0,12,
+        13,5,1,0,0,13,14,5,40,0,0,14,15,5,32,0,0,15,16,3,2,1,0,16,17,5,35,
+        0,0,17,1,1,0,0,0,18,19,3,4,2,0,19,3,1,0,0,0,20,25,3,6,3,0,21,22,
+        5,32,0,0,22,24,3,6,3,0,23,21,1,0,0,0,24,27,1,0,0,0,25,23,1,0,0,0,
+        25,26,1,0,0,0,26,28,1,0,0,0,27,25,1,0,0,0,28,29,5,32,0,0,29,30,5,
+        0,0,1,30,5,1,0,0,0,31,32,3,8,4,0,32,33,3,10,5,0,33,7,1,0,0,0,34,
+        35,7,0,0,0,35,9,1,0,0,0,36,41,5,40,0,0,37,38,5,34,0,0,38,40,5,40,
+        0,0,39,37,1,0,0,0,40,43,1,0,0,0,41,39,1,0,0,0,41,42,1,0,0,0,42,11,
+        1,0,0,0,43,41,1,0,0,0,2,25,41
     ]
 
 class LALGParser ( Parser ):
@@ -59,16 +53,15 @@ class LALGParser ( Parser ):
                       "REAL", "COMMENT", "MULTILINE_COMMENT", "WS", "INVALID_TOKEN", 
                       "INVALID" ]
 
-    RULE_number = 0
-    RULE_relation_operator = 1
-    RULE_factor = 2
-    RULE_term = 3
-    RULE_simple_expression = 4
-    RULE_expression = 5
-    RULE_variable = 6
+    RULE_program = 0
+    RULE_block = 1
+    RULE_variableDeclarationSection = 2
+    RULE_variableDeclaration = 3
+    RULE_type = 4
+    RULE_identifierList = 5
 
-    ruleNames =  [ "number", "relation_operator", "factor", "term", "simple_expression", 
-                   "expression", "variable" ]
+    ruleNames =  [ "program", "block", "variableDeclarationSection", "variableDeclaration", 
+                   "type", "identifierList" ]
 
     EOF = Token.EOF
     PROGRAM=1
@@ -128,496 +121,332 @@ class LALGParser ( Parser ):
 
 
 
-    class NumberContext(ParserRuleContext):
+    class ProgramContext(ParserRuleContext):
         __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def INT(self):
-            return self.getToken(LALGParser.INT, 0)
-
-        def REAL(self):
-            return self.getToken(LALGParser.REAL, 0)
-
-        def getRuleIndex(self):
-            return LALGParser.RULE_number
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterNumber" ):
-                listener.enterNumber(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitNumber" ):
-                listener.exitNumber(self)
-
-
-
-
-    def number(self):
-
-        localctx = LALGParser.NumberContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 0, self.RULE_number)
-        self._la = 0 # Token type
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 14
-            _la = self._input.LA(1)
-            if not(_la==41 or _la==42):
-                self._errHandler.recoverInline(self)
-            else:
-                self._errHandler.reportMatch(self)
-                self.consume()
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-
-    class Relation_operatorContext(ParserRuleContext):
-        __slots__ = 'parser'
-
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
-            super().__init__(parent, invokingState)
-            self.parser = parser
-
-        def EQUAL(self):
-            return self.getToken(LALGParser.EQUAL, 0)
-
-        def DIFF(self):
-            return self.getToken(LALGParser.DIFF, 0)
-
-        def LT(self):
-            return self.getToken(LALGParser.LT, 0)
-
-        def LTE(self):
-            return self.getToken(LALGParser.LTE, 0)
-
-        def GT(self):
-            return self.getToken(LALGParser.GT, 0)
-
-        def GTE(self):
-            return self.getToken(LALGParser.GTE, 0)
-
-        def getRuleIndex(self):
-            return LALGParser.RULE_relation_operator
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterRelation_operator" ):
-                listener.enterRelation_operator(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitRelation_operator" ):
-                listener.exitRelation_operator(self)
-
-
-
-
-    def relation_operator(self):
-
-        localctx = LALGParser.Relation_operatorContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 2, self.RULE_relation_operator)
-        self._la = 0 # Token type
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 16
-            _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 4227858432) != 0)):
-                self._errHandler.recoverInline(self)
-            else:
-                self._errHandler.reportMatch(self)
-                self.consume()
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-
-    class FactorContext(ParserRuleContext):
-        __slots__ = 'parser'
-
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
-            super().__init__(parent, invokingState)
-            self.parser = parser
-
-        def variable(self):
-            return self.getTypedRuleContext(LALGParser.VariableContext,0)
-
-
-        def number(self):
-            return self.getTypedRuleContext(LALGParser.NumberContext,0)
-
-
-        def LP(self):
-            return self.getToken(LALGParser.LP, 0)
-
-        def expression(self):
-            return self.getTypedRuleContext(LALGParser.ExpressionContext,0)
-
-
-        def RP(self):
-            return self.getToken(LALGParser.RP, 0)
-
-        def NOT(self):
-            return self.getToken(LALGParser.NOT, 0)
-
-        def factor(self):
-            return self.getTypedRuleContext(LALGParser.FactorContext,0)
-
-
-        def getRuleIndex(self):
-            return LALGParser.RULE_factor
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterFactor" ):
-                listener.enterFactor(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitFactor" ):
-                listener.exitFactor(self)
-
-
-
-
-    def factor(self):
-
-        localctx = LALGParser.FactorContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 4, self.RULE_factor)
-        try:
-            self.state = 26
-            self._errHandler.sync(self)
-            token = self._input.LA(1)
-            if token in [40]:
-                self.enterOuterAlt(localctx, 1)
-                self.state = 18
-                self.variable()
-                pass
-            elif token in [41, 42]:
-                self.enterOuterAlt(localctx, 2)
-                self.state = 19
-                self.number()
-                pass
-            elif token in [36]:
-                self.enterOuterAlt(localctx, 3)
-                self.state = 20
-                self.match(LALGParser.LP)
-                self.state = 21
-                self.expression()
-                self.state = 22
-                self.match(LALGParser.RP)
-                pass
-            elif token in [25]:
-                self.enterOuterAlt(localctx, 4)
-                self.state = 24
-                self.match(LALGParser.NOT)
-                self.state = 25
-                self.factor()
-                pass
-            else:
-                raise NoViableAltException(self)
-
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-
-    class TermContext(ParserRuleContext):
-        __slots__ = 'parser'
-
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
-            super().__init__(parent, invokingState)
-            self.parser = parser
-
-        def factor(self, i:int=None):
-            if i is None:
-                return self.getTypedRuleContexts(LALGParser.FactorContext)
-            else:
-                return self.getTypedRuleContext(LALGParser.FactorContext,i)
-
-
-        def MUL(self, i:int=None):
-            if i is None:
-                return self.getTokens(LALGParser.MUL)
-            else:
-                return self.getToken(LALGParser.MUL, i)
-
-        def INT_DIV(self, i:int=None):
-            if i is None:
-                return self.getTokens(LALGParser.INT_DIV)
-            else:
-                return self.getToken(LALGParser.INT_DIV, i)
-
-        def AND(self, i:int=None):
-            if i is None:
-                return self.getTokens(LALGParser.AND)
-            else:
-                return self.getToken(LALGParser.AND, i)
-
-        def getRuleIndex(self):
-            return LALGParser.RULE_term
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterTerm" ):
-                listener.enterTerm(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitTerm" ):
-                listener.exitTerm(self)
-
-
-
-
-    def term(self):
-
-        localctx = LALGParser.TermContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 6, self.RULE_term)
-        self._la = 0 # Token type
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 28
-            self.factor()
-            self.state = 33
-            self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,1,self._ctx)
-            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                if _alt==1:
-                    self.state = 29
-                    _la = self._input.LA(1)
-                    if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 22020096) != 0)):
-                        self._errHandler.recoverInline(self)
-                    else:
-                        self._errHandler.reportMatch(self)
-                        self.consume()
-                    self.state = 30
-                    self.factor() 
-                self.state = 35
-                self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,1,self._ctx)
-
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-
-    class Simple_expressionContext(ParserRuleContext):
-        __slots__ = 'parser'
-
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
-            super().__init__(parent, invokingState)
-            self.parser = parser
-
-        def term(self, i:int=None):
-            if i is None:
-                return self.getTypedRuleContexts(LALGParser.TermContext)
-            else:
-                return self.getTypedRuleContext(LALGParser.TermContext,i)
-
-
-        def SUM(self, i:int=None):
-            if i is None:
-                return self.getTokens(LALGParser.SUM)
-            else:
-                return self.getToken(LALGParser.SUM, i)
-
-        def SUB(self, i:int=None):
-            if i is None:
-                return self.getTokens(LALGParser.SUB)
-            else:
-                return self.getToken(LALGParser.SUB, i)
-
-        def OR(self, i:int=None):
-            if i is None:
-                return self.getTokens(LALGParser.OR)
-            else:
-                return self.getToken(LALGParser.OR, i)
-
-        def getRuleIndex(self):
-            return LALGParser.RULE_simple_expression
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSimple_expression" ):
-                listener.enterSimple_expression(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSimple_expression" ):
-                listener.exitSimple_expression(self)
-
-
-
-
-    def simple_expression(self):
-
-        localctx = LALGParser.Simple_expressionContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 8, self.RULE_simple_expression)
-        self._la = 0 # Token type
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 37
-            self._errHandler.sync(self)
-            _la = self._input.LA(1)
-            if _la==18 or _la==19:
-                self.state = 36
-                _la = self._input.LA(1)
-                if not(_la==18 or _la==19):
-                    self._errHandler.recoverInline(self)
-                else:
-                    self._errHandler.reportMatch(self)
-                    self.consume()
-
-
-            self.state = 39
-            self.term()
-            self.state = 44
-            self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,3,self._ctx)
-            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                if _alt==1:
-                    self.state = 40
-                    _la = self._input.LA(1)
-                    if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 9175040) != 0)):
-                        self._errHandler.recoverInline(self)
-                    else:
-                        self._errHandler.reportMatch(self)
-                        self.consume()
-                    self.state = 41
-                    self.term() 
-                self.state = 46
-                self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,3,self._ctx)
-
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-
-    class ExpressionContext(ParserRuleContext):
-        __slots__ = 'parser'
-
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
-            super().__init__(parent, invokingState)
-            self.parser = parser
-
-        def simple_expression(self, i:int=None):
-            if i is None:
-                return self.getTypedRuleContexts(LALGParser.Simple_expressionContext)
-            else:
-                return self.getTypedRuleContext(LALGParser.Simple_expressionContext,i)
-
-
-        def relation_operator(self):
-            return self.getTypedRuleContext(LALGParser.Relation_operatorContext,0)
-
-
-        def getRuleIndex(self):
-            return LALGParser.RULE_expression
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterExpression" ):
-                listener.enterExpression(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitExpression" ):
-                listener.exitExpression(self)
-
-
-
-
-    def expression(self):
-
-        localctx = LALGParser.ExpressionContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 10, self.RULE_expression)
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 47
-            self.simple_expression()
-            self.state = 51
-            self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,4,self._ctx)
-            if la_ == 1:
-                self.state = 48
-                self.relation_operator()
-                self.state = 49
-                self.simple_expression()
-
-
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-
-    class VariableContext(ParserRuleContext):
-        __slots__ = 'parser'
-
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
-            super().__init__(parent, invokingState)
-            self.parser = parser
+        def PROGRAM(self):
+            return self.getToken(LALGParser.PROGRAM, 0)
 
         def IDENTIFIER(self):
             return self.getToken(LALGParser.IDENTIFIER, 0)
 
-        def expression(self):
-            return self.getTypedRuleContext(LALGParser.ExpressionContext,0)
+        def SEMICOLON(self):
+            return self.getToken(LALGParser.SEMICOLON, 0)
+
+        def block(self):
+            return self.getTypedRuleContext(LALGParser.BlockContext,0)
+
+
+        def DOT(self):
+            return self.getToken(LALGParser.DOT, 0)
+
+        def getRuleIndex(self):
+            return LALGParser.RULE_program
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterProgram" ):
+                listener.enterProgram(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitProgram" ):
+                listener.exitProgram(self)
+
+
+
+
+    def program(self):
+
+        localctx = LALGParser.ProgramContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 0, self.RULE_program)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 12
+            self.match(LALGParser.PROGRAM)
+            self.state = 13
+            self.match(LALGParser.IDENTIFIER)
+            self.state = 14
+            self.match(LALGParser.SEMICOLON)
+            self.state = 15
+            self.block()
+            self.state = 16
+            self.match(LALGParser.DOT)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class BlockContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def variableDeclarationSection(self):
+            return self.getTypedRuleContext(LALGParser.VariableDeclarationSectionContext,0)
 
 
         def getRuleIndex(self):
-            return LALGParser.RULE_variable
+            return LALGParser.RULE_block
 
         def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterVariable" ):
-                listener.enterVariable(self)
+            if hasattr( listener, "enterBlock" ):
+                listener.enterBlock(self)
 
         def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitVariable" ):
-                listener.exitVariable(self)
+            if hasattr( listener, "exitBlock" ):
+                listener.exitBlock(self)
 
 
 
 
-    def variable(self):
+    def block(self):
 
-        localctx = LALGParser.VariableContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 12, self.RULE_variable)
+        localctx = LALGParser.BlockContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 2, self.RULE_block)
         try:
-            self.state = 56
+            self.enterOuterAlt(localctx, 1)
+            self.state = 18
+            self.variableDeclarationSection()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class VariableDeclarationSectionContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def variableDeclaration(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(LALGParser.VariableDeclarationContext)
+            else:
+                return self.getTypedRuleContext(LALGParser.VariableDeclarationContext,i)
+
+
+        def SEMICOLON(self, i:int=None):
+            if i is None:
+                return self.getTokens(LALGParser.SEMICOLON)
+            else:
+                return self.getToken(LALGParser.SEMICOLON, i)
+
+        def EOF(self):
+            return self.getToken(LALGParser.EOF, 0)
+
+        def getRuleIndex(self):
+            return LALGParser.RULE_variableDeclarationSection
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterVariableDeclarationSection" ):
+                listener.enterVariableDeclarationSection(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitVariableDeclarationSection" ):
+                listener.exitVariableDeclarationSection(self)
+
+
+
+
+    def variableDeclarationSection(self):
+
+        localctx = LALGParser.VariableDeclarationSectionContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 4, self.RULE_variableDeclarationSection)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 20
+            self.variableDeclaration()
+            self.state = 25
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,5,self._ctx)
-            if la_ == 1:
-                self.enterOuterAlt(localctx, 1)
-                self.state = 53
-                self.match(LALGParser.IDENTIFIER)
-                pass
+            _alt = self._interp.adaptivePredict(self._input,0,self._ctx)
+            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
+                if _alt==1:
+                    self.state = 21
+                    self.match(LALGParser.SEMICOLON)
+                    self.state = 22
+                    self.variableDeclaration() 
+                self.state = 27
+                self._errHandler.sync(self)
+                _alt = self._interp.adaptivePredict(self._input,0,self._ctx)
 
-            elif la_ == 2:
-                self.enterOuterAlt(localctx, 2)
-                self.state = 54
-                self.match(LALGParser.IDENTIFIER)
-                self.state = 55
-                self.expression()
-                pass
+            self.state = 28
+            self.match(LALGParser.SEMICOLON)
+            self.state = 29
+            self.match(LALGParser.EOF)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
 
+
+    class VariableDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def type_(self):
+            return self.getTypedRuleContext(LALGParser.TypeContext,0)
+
+
+        def identifierList(self):
+            return self.getTypedRuleContext(LALGParser.IdentifierListContext,0)
+
+
+        def getRuleIndex(self):
+            return LALGParser.RULE_variableDeclaration
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterVariableDeclaration" ):
+                listener.enterVariableDeclaration(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitVariableDeclaration" ):
+                listener.exitVariableDeclaration(self)
+
+
+
+
+    def variableDeclaration(self):
+
+        localctx = LALGParser.VariableDeclarationContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 6, self.RULE_variableDeclaration)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 31
+            self.type_()
+            self.state = 32
+            self.identifierList()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class TypeContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def TYPE_BOOL(self):
+            return self.getToken(LALGParser.TYPE_BOOL, 0)
+
+        def TYPE_INT(self):
+            return self.getToken(LALGParser.TYPE_INT, 0)
+
+        def getRuleIndex(self):
+            return LALGParser.RULE_type
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterType" ):
+                listener.enterType(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitType" ):
+                listener.exitType(self)
+
+
+
+
+    def type_(self):
+
+        localctx = LALGParser.TypeContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 8, self.RULE_type)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 34
+            _la = self._input.LA(1)
+            if not(_la==4 or _la==5):
+                self._errHandler.recoverInline(self)
+            else:
+                self._errHandler.reportMatch(self)
+                self.consume()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class IdentifierListContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def IDENTIFIER(self, i:int=None):
+            if i is None:
+                return self.getTokens(LALGParser.IDENTIFIER)
+            else:
+                return self.getToken(LALGParser.IDENTIFIER, i)
+
+        def COMMA(self, i:int=None):
+            if i is None:
+                return self.getTokens(LALGParser.COMMA)
+            else:
+                return self.getToken(LALGParser.COMMA, i)
+
+        def getRuleIndex(self):
+            return LALGParser.RULE_identifierList
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterIdentifierList" ):
+                listener.enterIdentifierList(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitIdentifierList" ):
+                listener.exitIdentifierList(self)
+
+
+
+
+    def identifierList(self):
+
+        localctx = LALGParser.IdentifierListContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 10, self.RULE_identifierList)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 36
+            self.match(LALGParser.IDENTIFIER)
+            self.state = 41
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while _la==34:
+                self.state = 37
+                self.match(LALGParser.COMMA)
+                self.state = 38
+                self.match(LALGParser.IDENTIFIER)
+                self.state = 43
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
 
         except RecognitionException as re:
             localctx.exception = re
