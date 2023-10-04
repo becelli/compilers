@@ -30,8 +30,6 @@ class MainApplicationWidget(QWidget):
         self.setupOutputs()
         self.updateLabel()
 
-        self.bindEvents()
-
     def setupMainLayout(self):
         self.editorLayout = QVBoxLayout()
         self.tableAndErrorsLayout = QVBoxLayout()
@@ -50,10 +48,6 @@ class MainApplicationWidget(QWidget):
         lexerElement.setFont(font)
         self.textEditor.setMarginsFont(font)
         self.editorLayout.addWidget(self.textEditor)
-        self.textEditor.textChanged.connect(
-            lambda: self.state.set("code", self.textEditor.text())
-        )
-
 
     def setupTableLexer(self):
         self.table = QTableWidget(1, 5, self)
@@ -88,11 +82,46 @@ class MainApplicationWidget(QWidget):
         layout.addWidget(output)
         return layout
 
-    def lex(self):
-        stream = InputStream(self.state.get("code"))
-        lexer = LALGLexer(stream)
-        tokens = lexer.getAllTokens()
+    def setCode(self, code: str):
+        self.textEditor.setText(code)
 
+    @property
+    def code(self) -> str:
+        return self.textEditor.text()
+
+    
+    def updateLexerTable(self, token_list):
+        self.table.setRowCount(len(token_list))
+        for row, token in enumerate(token_list):
+            for col, value in enumerate(token):
+                self.table.setItem(row, col, QTableWidgetItem(str(value)))
+
+    def analyze(self):
+        # self.lex()
+        self.syntaxAnalysis()
+
+    def syntaxAnalysis(self):
+        listener = LALGErrorListener()
+
+        inputStream = InputStream(self.code)
+        lexer = LALGLexer(inputStream)
+        self.updateTable(lexer, listener)
+
+        tokenStream = CommonTokenStream(lexer)
+        parser = LALGParser(tokenStream)
+
+        lexer.removeErrorListeners()
+        parser.removeErrorListeners()
+        lexer.addErrorListener(listener)
+        parser.addErrorListener(listener)
+        parser._errHandler = LALGCustomErrorStrategy()
+
+        parser.program()
+        self.outputError.clear()
+        self.outputError.append(listener.getErrorMessage())
+    
+    def updateTable(self, lexer: LALGLexer, listener: LALGErrorListener):
+        tokens = lexer.getAllTokens()
         token_list = [
             [
                 token.text,
@@ -105,33 +134,11 @@ class MainApplicationWidget(QWidget):
         ]
 
         self.updateLexerTable(token_list)
+            
+        for token in tokens:
+            if token.type in [LALGLexer.INVALID, LALGLexer.INVALID_TOKEN]:
+                listener.lexerError(token.line, token.column, f"unexpected character: {token.text}")
 
-    def updateLexerTable(self, token_list):
-        self.table.setRowCount(len(token_list))
-        for row, token in enumerate(token_list):
-            for col, value in enumerate(token):
-                self.table.setItem(row, col, QTableWidgetItem(str(value)))
-
-    def analyze(self):
-        self.lex()
-        self.syntaxAnalysis()
-
-    def syntaxAnalysis(self):
-        inputStream = InputStream(self.state.get("code"))
-        lexer = LALGLexer(inputStream)
-        tokenStream = CommonTokenStream(lexer)
-        parser = LALGParser(tokenStream)
-
-        listener = LALGErrorListener()
-        lexer.removeErrorListeners()
-        parser.removeErrorListeners()
-        lexer.addErrorListener(listener)
-        parser.addErrorListener(listener)
-        parser._errHandler = LALGCustomErrorStrategy()
-
-        parser.program()
-        self.outputError.clear()
-        self.outputError.append(listener.getErrorMessage())
 
     def toggleLexer(self):
         self.updateLabel(CompilerSteps.LEXER)
@@ -153,6 +160,3 @@ class MainApplicationWidget(QWidget):
             case CompilerSteps.SEMANTIC:
                 pass
                 # self.outputErrorType.setText("Semantic Errors")
-
-    def bindEvents(self):
-        self.state.bind("code", lambda code: self.textEditor.setText(code))

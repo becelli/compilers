@@ -8,6 +8,9 @@ class LALGErrorListener(AntlrErrorListener):
     def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
         self.errors.append(f"Syntax error on line {line}, column {column}: {msg}")
 
+    def lexerError(self, line, column, msg):
+        self.errors.append(f"Lexer error on line {line}, column {column}: {msg}")
+
     def reportAmbiguity(
         self, recognizer, dfa, startIndex, stopIndex, exact, ambigAlts, configs
     ):

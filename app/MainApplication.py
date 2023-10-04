@@ -77,13 +77,14 @@ class MainApplication(QMainWindow):
 
         with open(fileName, "r") as file:
             text = file.read()
-            self.mainWidget.state.set("code", text)
+            self.mainWidget.setCode(text)
 
     def saveFile(self):
         fileName, _ = QFileDialog.getSaveFileName(
             self, "Save", "", "Text files (*.txt)"
         )
         if not fileName:
+            # send warning to user with QMessageBox
             messageBox = QMessageBox()
             messageBox.setWindowTitle("Warning")
             messageBox.setText("File not saved")
@@ -91,4 +92,4 @@ class MainApplication(QMainWindow):
             return
 
         with open(fileName, "w") as file:
-            file.write(self.mainWidget.state.get("code"))
+            file.write(self.mainWidget.code)
