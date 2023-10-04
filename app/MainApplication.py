@@ -53,7 +53,7 @@ class MainApplication(QMainWindow):
         self.centralLayout.addWidget(self.navBar)
 
     def setupMainWidget(self):
-        self.mainWidget =MainApplicationWidget()
+        self.mainWidget = MainApplicationWidget()
         self.centralLayout.addWidget(self.mainWidget)
 
     def setupActions(self):
@@ -65,7 +65,9 @@ class MainApplication(QMainWindow):
         self.toggleSemanticButton.clicked.connect(self.mainWidget.toggleSemantic)
 
     def openFile(self):
-        fileName, _ = QFileDialog.getOpenFileName(self, "Open", "", "Text files (*.txt)")
+        fileName, _ = QFileDialog.getOpenFileName(
+            self, "Open", "", "Text files (*.txt)"
+        )
         if not fileName:
             messageBox = QMessageBox()
             messageBox.setWindowTitle("Warning")
@@ -75,17 +77,18 @@ class MainApplication(QMainWindow):
 
         with open(fileName, "r") as file:
             text = file.read()
-            self.mainWidget.setCode(text)
+            self.mainWidget.state.set("code", text)
 
     def saveFile(self):
-        fileName, _ = QFileDialog.getSaveFileName(self, "Save", "", "Text files (*.txt)")
+        fileName, _ = QFileDialog.getSaveFileName(
+            self, "Save", "", "Text files (*.txt)"
+        )
         if not fileName:
-            # send warning to user with QMessageBox
             messageBox = QMessageBox()
             messageBox.setWindowTitle("Warning")
             messageBox.setText("File not saved")
             messageBox.exec()
             return
-            
+
         with open(fileName, "w") as file:
-            file.write(self.mainWidget.code)
+            file.write(self.mainWidget.state.get("code"))

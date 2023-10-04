@@ -8,16 +8,33 @@ from app.lexer.Colors import Colors
 
 
 class CustomLexer(QsciLexerCustom):
-    reservedKeywords = { 
-        "program", "procedure", "var", "int", "boolean", "read", "write", "true", 
-        "false", "begin", "end", "if", "then", "else", "or", "and", "not", "div", 
-        "while", "do"
+    reservedKeywords = {
+        "program",
+        "procedure",
+        "var",
+        "int",
+        "boolean",
+        "read",
+        "write",
+        "true",
+        "false",
+        "begin",
+        "end",
+        "if",
+        "then",
+        "else",
+        "or",
+        "and",
+        "not",
+        "div",
+        "while",
+        "do",
     }
 
     startMultilineCommentTokens = "{"
     endMultilineCommentTokens = "}"
     startCommentTokens = ["//", startMultilineCommentTokens]
-    
+
     def __init__(self, parent: QsciScintilla):
         super().__init__(parent)
         self.initializeStyles()
@@ -34,7 +51,7 @@ class CustomLexer(QsciLexerCustom):
         styleDescriptions = {
             Colors.primaryStyle.value: "black",
             Colors.secondaryStyle.value: "blue",
-            Colors.commentStyle.value: "red"
+            Colors.commentStyle.value: "red",
         }
         return styleDescriptions.get(styleNumber, "")
 
@@ -43,7 +60,7 @@ class CustomLexer(QsciLexerCustom):
 
     def styleText(self, startPos: int, endPos: int):
         self.startStyling(0)
-        textContent = self.parent().text() # type: ignore
+        textContent = self.parent().text()  # type: ignore
         tokenList = [
             (token, len(bytearray(token, "utf-8")))
             for token in re.findall(r"\s+|\w+|\/\/|\W", textContent)
