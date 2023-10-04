@@ -1,74 +1,38 @@
-from re import I
-
 from antlr4 import Parser, Token
-from antlr4.Lexer import LexerNoViableAltException
+from antlr4.Parser import Parser
+from antlr4.Token import Token
 from antlr4.error.ErrorStrategy import DefaultErrorStrategy
-from antlr4.error.Errors import (
-    FailedPredicateException,
-    InputMismatchException,
-    NoViableAltException,
-    RecognitionException,
-)
+from antlr4.error.ErrorStrategy import DefaultErrorStrategy
+from antlr4.error.Errors import RecognitionException
+from libraries.antlr.LALGParser import LALGParser
 
 class LALGCustomErrorStrategy(DefaultErrorStrategy):
-    def reportError(self, recognizer: Parser, exception: RecognitionException):
-        if self.inErrorRecoveryMode(recognizer):
-            return
-            
-        self.beginErrorCondition(recognizer)
-        match exception:
-            case LexerNoViableAltException():
-                self.reportLexerError(recognizer, exception)
-            case NoViableAltException():
-                self.reportNoViableAlternative(recognizer, exception)
-            case InputMismatchException():
-                self.reportInputMismatch(recognizer, exception)
-            case FailedPredicateException():
-                self.reportFailedPredicate(recognizer, exception)
-            case _:
-                print(f"Unknown recognition error: {exception}")
-                token = recognizer.getCurrentToken()
-                expected = self.getExpectedTokensString(recognizer, exception)
-                msg = f"Error on line {token.line}, column {token.column}: unexpected token {token.text}, expected {expected}.\n{exception.message}"
-                recognizer.notifyErrorListeners(msg, token, exception)
+    def recover(self, recognizer: Parser, exception: RecognitionException):
+        super().recover(recognizer, exception)
 
-    def reportLexerError(self, recognizer: Parser, exception: LexerNoViableAltException):
-        line, column = exception.startIndex, exception.startIndex + 1
-        currentToken = recognizer.getCurrentToken()
-        inputVal = self.getInputTokenValue(recognizer, exception)
-        formattedInputVal = self.escapeWSAndQuote(inputVal)
-        msg = f"Error on line {line}, column {column}: unrecognized input {formattedInputVal}."
-        recognizer.notifyErrorListeners(msg, currentToken, exception)
+        inputStream = recognizer.getInputStream()
+        startIndex = int(inputStream.index)
+        while inputStream.LA(1) != Token.EOF:
+            currentTokenType = inputStream.LA(1)
+            if currentTokenType in self.startTokens:
+                break
+            else:
+                recognizer.consume()
 
-    def reportInputMismatch(self, recognizer: Parser, exception: InputMismatchException):
-        line, column = exception.offendingToken.line, exception.offendingToken.column
-        errDisplay = self.getTokenErrorDisplay(exception.offendingToken)[1:-1]
-        expected = self.getExpectedTokensString(recognizer, exception)
-        msg = f"Error on line {line}, column {column}: unrecognized input {errDisplay}, expected {expected}."
-        recognizer.notifyErrorListeners(msg, exception.offendingToken, exception)
-
-    def reportNoViableAlternative(self, recognizer: Parser, exception: NoViableAltException):
-        line, column = exception.offendingToken.line, exception.offendingToken.column
-        inputVal = self.getInputTokenValue(recognizer, exception)
-        formattedInputVal = self.escapeWSAndQuote(inputVal)
-        msg = f"Error on line {line}, column {column}: unrecognized input {formattedInputVal}."
-        recognizer.notifyErrorListeners(msg, exception.offendingToken, exception)
-
-    def reportFailedPredicate(self, recognizer, exception: FailedPredicateException):
-        line, column = exception.offendingToken.line, exception.offendingToken.column
-        ruleName = recognizer.ruleNames[recognizer._ctx.getRuleIndex()]
-        msg = f"Error on line {line}, column {column}, rule {ruleName}: {exception.message}"
-        recognizer.notifyErrorListeners(msg, exception.offendingToken, exception)
-
-    def getExpectedTokensString(self, recognizer: Parser, exception: RecognitionException):
-        expectedTokens = exception.getExpectedTokens()
-        if expectedTokens is None:
-            return "<unknown token>"
-
-        return expectedTokens.toString(recognizer.literalNames, recognizer.symbolicNames)  # type: ignore
-
-    def getInputTokenValue(self, recognizer, exception):
-        tokens = recognizer.getTokenStream()
-        if tokens is not None:
-            return "<EOF>" if exception.startToken.type == Token.EOF else tokens.getText(exception.startToken, exception.offendingToken)
-        return "<unknown token>"
+        if inputStream.LA(1) == Token.EOF:
+            inputStream.seek(startIndex)
+    @property
+    def startTokens(self) -> set:
+        return {
+            LALGParser.PROGRAM,
+            LALGParser.PROCEDURE,
+            LALGParser.VAR,
+            LALGParser.BEGIN,
+            LALGParser.IF,
+            LALGParser.WHILE,
+            LALGParser.END,
+            LALGParser.DO,
+            LALGParser.THEN,
+            LALGParser.ELSE,
+            Token.EOF,
+        }

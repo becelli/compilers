@@ -11,18 +11,18 @@ else:
 def serializedATN():
     return [
         4,1,47,45,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,1,0,1,
-        0,1,0,1,0,1,0,1,0,1,1,1,1,1,2,1,2,1,2,5,2,24,8,2,10,2,12,2,27,9,
-        2,1,2,1,2,1,2,1,3,1,3,1,3,1,4,1,4,1,5,1,5,1,5,5,5,40,8,5,10,5,12,
-        5,43,9,5,1,5,0,0,6,0,2,4,6,8,10,0,1,1,0,4,5,40,0,12,1,0,0,0,2,18,
-        1,0,0,0,4,20,1,0,0,0,6,31,1,0,0,0,8,34,1,0,0,0,10,36,1,0,0,0,12,
-        13,5,1,0,0,13,14,5,40,0,0,14,15,5,32,0,0,15,16,3,2,1,0,16,17,5,35,
-        0,0,17,1,1,0,0,0,18,19,3,4,2,0,19,3,1,0,0,0,20,25,3,6,3,0,21,22,
-        5,32,0,0,22,24,3,6,3,0,23,21,1,0,0,0,24,27,1,0,0,0,25,23,1,0,0,0,
-        25,26,1,0,0,0,26,28,1,0,0,0,27,25,1,0,0,0,28,29,5,32,0,0,29,30,5,
-        0,0,1,30,5,1,0,0,0,31,32,3,8,4,0,32,33,3,10,5,0,33,7,1,0,0,0,34,
-        35,7,0,0,0,35,9,1,0,0,0,36,41,5,40,0,0,37,38,5,34,0,0,38,40,5,40,
-        0,0,39,37,1,0,0,0,40,43,1,0,0,0,41,39,1,0,0,0,41,42,1,0,0,0,42,11,
-        1,0,0,0,43,41,1,0,0,0,2,25,41
+        0,1,0,1,0,1,0,1,0,1,0,1,1,1,1,1,2,1,2,1,2,5,2,25,8,2,10,2,12,2,28,
+        9,2,1,2,1,2,1,3,1,3,1,3,1,4,1,4,1,5,1,5,1,5,5,5,40,8,5,10,5,12,5,
+        43,9,5,1,5,0,0,6,0,2,4,6,8,10,0,1,1,0,4,5,40,0,12,1,0,0,0,2,19,1,
+        0,0,0,4,21,1,0,0,0,6,31,1,0,0,0,8,34,1,0,0,0,10,36,1,0,0,0,12,13,
+        5,1,0,0,13,14,5,40,0,0,14,15,5,32,0,0,15,16,3,2,1,0,16,17,5,35,0,
+        0,17,18,5,0,0,1,18,1,1,0,0,0,19,20,3,4,2,0,20,3,1,0,0,0,21,26,3,
+        6,3,0,22,23,5,32,0,0,23,25,3,6,3,0,24,22,1,0,0,0,25,28,1,0,0,0,26,
+        24,1,0,0,0,26,27,1,0,0,0,27,29,1,0,0,0,28,26,1,0,0,0,29,30,5,32,
+        0,0,30,5,1,0,0,0,31,32,3,8,4,0,32,33,3,10,5,0,33,7,1,0,0,0,34,35,
+        7,0,0,0,35,9,1,0,0,0,36,41,5,40,0,0,37,38,5,34,0,0,38,40,5,40,0,
+        0,39,37,1,0,0,0,40,43,1,0,0,0,41,39,1,0,0,0,41,42,1,0,0,0,42,11,
+        1,0,0,0,43,41,1,0,0,0,2,26,41
     ]
 
 class LALGParser ( Parser ):
@@ -144,6 +144,9 @@ class LALGParser ( Parser ):
         def DOT(self):
             return self.getToken(LALGParser.DOT, 0)
 
+        def EOF(self):
+            return self.getToken(LALGParser.EOF, 0)
+
         def getRuleIndex(self):
             return LALGParser.RULE_program
 
@@ -174,6 +177,8 @@ class LALGParser ( Parser ):
             self.block()
             self.state = 16
             self.match(LALGParser.DOT)
+            self.state = 17
+            self.match(LALGParser.EOF)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -214,7 +219,7 @@ class LALGParser ( Parser ):
         self.enterRule(localctx, 2, self.RULE_block)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 18
+            self.state = 19
             self.variableDeclarationSection()
         except RecognitionException as re:
             localctx.exception = re
@@ -245,9 +250,6 @@ class LALGParser ( Parser ):
             else:
                 return self.getToken(LALGParser.SEMICOLON, i)
 
-        def EOF(self):
-            return self.getToken(LALGParser.EOF, 0)
-
         def getRuleIndex(self):
             return LALGParser.RULE_variableDeclarationSection
 
@@ -268,25 +270,23 @@ class LALGParser ( Parser ):
         self.enterRule(localctx, 4, self.RULE_variableDeclarationSection)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 20
+            self.state = 21
             self.variableDeclaration()
-            self.state = 25
+            self.state = 26
             self._errHandler.sync(self)
             _alt = self._interp.adaptivePredict(self._input,0,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt==1:
-                    self.state = 21
-                    self.match(LALGParser.SEMICOLON)
                     self.state = 22
+                    self.match(LALGParser.SEMICOLON)
+                    self.state = 23
                     self.variableDeclaration() 
-                self.state = 27
+                self.state = 28
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,0,self._ctx)
 
-            self.state = 28
-            self.match(LALGParser.SEMICOLON)
             self.state = 29
-            self.match(LALGParser.EOF)
+            self.match(LALGParser.SEMICOLON)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)

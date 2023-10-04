@@ -9,10 +9,10 @@ class ColorMapper:
     @staticmethod
     def getColor(style: Colors) -> QColor:
         mapper = {
-            Colors.primaryStyle.value: QColor("#f8f8f2"),
-            Colors.secondaryStyle.value: QColor("#ff79c6"),
-            Colors.commentStyle.value: QColor("#6272a4"),
-            Colors.backgroundStyle.value: QColor("#282a36"),
-            Colors.foregroundStyle.value: QColor("#f8f8f2")
+            Colors.primaryStyle.value: QColor("#242424"),
+            Colors.secondaryStyle.value: QColor("#c01c28"),
+            Colors.commentStyle.value: QColor("#8ff0a4"),
+            Colors.backgroundStyle.value: QColor("#ffffff"),
+            Colors.foregroundStyle.value: QColor("#242424")
         }
         return mapper[style.value]

@@ -3,12 +3,14 @@ options {
 	tokenVocab = LALGLexer;
 }
 
-program: PROGRAM IDENTIFIER SEMICOLON block DOT;
+program: PROGRAM IDENTIFIER SEMICOLON block DOT EOF;
 
 block: variableDeclarationSection;
 
 variableDeclarationSection:
-	variableDeclaration (SEMICOLON variableDeclaration)* SEMICOLON EOF;
+	variableDeclaration
+	(SEMICOLON variableDeclaration)*
+	SEMICOLON;
 
 variableDeclaration: type identifierList;
 

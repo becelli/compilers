@@ -1,13 +1,9 @@
-import enum
-
 from PyQt6.Qsci import QsciScintilla
-from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QHeaderView,
     QLabel,
-    QPushButton,
     QTableWidget,
     QTableWidgetItem,
     QTextEdit,
@@ -16,8 +12,8 @@ from PyQt6.QtWidgets import (
 )
 from antlr4 import CommonTokenStream, InputStream
 from app.entities.CompilerSteps import CompilerSteps
-
 from app.lexer.CustomLexer import CustomLexer
+from libraries.antlr.LALGCustomErrorStrategy import LALGCustomErrorStrategy
 from libraries.antlr.LALGErrorListener import LALGErrorListener
 from libraries.antlr.LALGLexer import LALGLexer
 from libraries.antlr.LALGParser import LALGParser
@@ -28,9 +24,9 @@ class MainApplicationWidget(QWidget):
         super().__init__()
         self.setupMainLayout()
         self.setupEditor()
-        self.setupOutputs()
         self.setupTableLexer()
-        self.toggleLexer()
+        self.setupOutputs()
+        self.updateLabel()
 
     def setupMainLayout(self):
         self.editorLayout = QVBoxLayout()
@@ -55,20 +51,18 @@ class MainApplicationWidget(QWidget):
         self.table = QTableWidget(1, 5, self)
         horizontalHeader = self.table.horizontalHeader()
         if horizontalHeader is not None:
-            horizontalHeader.setSectionResizeMode(
-                QHeaderView.ResizeMode.Stretch)
-        self.table.setHorizontalHeaderLabels(
-            ["Lexem", "Token", "Line", "Start Column", "End Column"])
+            horizontalHeader.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.table.setHorizontalHeaderLabels(["Lexem", "Token", "Line", "Start Column", "End Column"])
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.table.setSelectionBehavior(
             QTableWidget.SelectionBehavior.SelectRows)
 
-        self.tableAndErrorsLayout.addWidget(self.table)        
+        self.tableAndErrorsLayout.addWidget(self.table)
 
     def setupOutputs(self):
-        self.errTitle = QLabel()
+        self.outputErrorType = QLabel("Errors")
         self.outputError = self.createOutput()
-        self.errorLayout = self.createOutputLayout(self.errTitle, self.outputError)
+        self.errorLayout = self.createOutputLayout(self.outputErrorType, self.outputError)
         self.tableAndErrorsLayout.addLayout(self.errorLayout)
 
     def createOutput(self):
@@ -76,7 +70,7 @@ class MainApplicationWidget(QWidget):
         output.setReadOnly(True)
         return output
 
-    def createOutputLayout(self, title, output):
+    def createOutputLayout(self, title: QLabel, output: QTextEdit):
         layout = QVBoxLayout()
         layout.addStretch()
         layout.addWidget(title)
@@ -114,17 +108,17 @@ class MainApplicationWidget(QWidget):
         self.syntaxAnalysis()
 
     def syntaxAnalysis(self):
-        input_stream = InputStream(self.code)
-        lexer = LALGLexer(input_stream)
-        token_stream = CommonTokenStream(lexer)
-        parser = LALGParser(token_stream)
+        inputStream = InputStream(self.code)
+        lexer = LALGLexer(inputStream)
+        tokenStream = CommonTokenStream(lexer)
+        parser = LALGParser(tokenStream)
 
         listener = LALGErrorListener()
         parser.removeErrorListeners()
         parser.addErrorListener(listener)
+        parser._errHandler = LALGCustomErrorStrategy()
 
-        parser.variable()
-
+        parser.program()
         self.outputError.clear()
         self.outputError.append(listener.getErrorMessage())
         
@@ -141,8 +135,11 @@ class MainApplicationWidget(QWidget):
     def updateLabel(self, CompilerSteps: CompilerSteps = CompilerSteps.LEXER):
         match CompilerSteps:
             case CompilerSteps.LEXER:
-                self.errTitle.setText("Lexer Errors")
+                pass
+                # self.outputErrorType.setText("Lexer Errors")
             case CompilerSteps.SYNTAX:
-                self.errTitle.setText("Syntax Errors")
+                pass
+                # self.outputErrorType.setText("Syntax Errors")
             case CompilerSteps.SEMANTIC:
-                self.errTitle.setText("Semantic Errors")
+                pass
+                # self.outputErrorType.setText("Semantic Errors")
