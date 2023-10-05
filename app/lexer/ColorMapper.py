@@ -15,5 +15,6 @@ class ColorMapper:
             Colors.commentStyle.value: QColor("#8ff0a4"),
             Colors.backgroundStyle.value: QColor("#ffffff"),
             Colors.foregroundStyle.value: QColor("#242424"),
+            Colors.lowContrastStyle.value: QColor("#a0a0a0"),
         }
         return mapper[style.value]

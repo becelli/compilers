@@ -7,3 +7,4 @@ class Colors(Enum):
     commentStyle = 2
     backgroundStyle = 3
     foregroundStyle = 4
+    lowContrastStyle = 5

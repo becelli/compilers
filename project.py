@@ -3,7 +3,7 @@ import sys
 from PyQt6.QtWidgets import QApplication
 
 from app.MainApplication import MainApplication
-from state.AppState import AppState
+from libraries.state.AppState import AppState
 
 
 def setup():

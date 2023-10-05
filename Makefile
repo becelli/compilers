@@ -3,3 +3,11 @@ generate:
 
 execute:
 	python3 project.py
+
+format:
+	black project.py
+
+run:
+	make format
+	make generate
+	make execute

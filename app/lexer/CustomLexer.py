@@ -1,7 +1,6 @@
 import re
 
 from PyQt6.Qsci import QsciLexerCustom, QsciScintilla
-from PyQt6.QtGui import QFont
 
 from app.lexer.ColorMapper import ColorMapper
 from app.lexer.Colors import Colors
@@ -54,9 +53,6 @@ class CustomLexer(QsciLexerCustom):
             Colors.commentStyle.value: "red",
         }
         return styleDescriptions.get(styleNumber, "")
-
-    def defaultFont(self, style: int) -> QFont:
-        return QFont("monospace", 24, QFont.Weight.Bold)
 
     def styleText(self, startPos: int, endPos: int):
         self.startStyling(0)

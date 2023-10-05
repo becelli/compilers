@@ -38,8 +38,8 @@ class MainApplication(QMainWindow):
         self.navBarLayout.addWidget(self.openFileButton)
         self.navBarLayout.addWidget(self.saveFileButton)
         self.navBarLayout.addStretch()
-        self.doAnalysisButton = QPushButton("Analyze")
-        self.doAnalysisButton.setStyleSheet("background-color: red")
+        self.doAnalysisButton = QPushButton("Compilar")
+        self.doAnalysisButton.setStyleSheet("background-color: #BF4342")
         self.navBarLayout.addWidget(self.doAnalysisButton)
         self.navBarLayout.addStretch()
         self.toggleLexerButton = QPushButton("Lexical")
@@ -53,13 +53,13 @@ class MainApplication(QMainWindow):
         self.centralLayout.addWidget(self.navBar)
 
     def setupMainWidget(self):
-        self.mainWidget = MainApplicationWidget()
+        self.mainWidget = MainApplicationWidget(self.state)
         self.centralLayout.addWidget(self.mainWidget)
 
     def setupActions(self):
         self.openFileButton.clicked.connect(self.openFile)
         self.saveFileButton.clicked.connect(self.saveFile)
-        self.doAnalysisButton.clicked.connect(self.mainWidget.analyze)
+        self.doAnalysisButton.clicked.connect(self.mainWidget.compile)
         self.toggleLexerButton.clicked.connect(self.mainWidget.toggleLexer)
         self.toggleParserButton.clicked.connect(self.mainWidget.toggleSyntax)
         self.toggleSemanticButton.clicked.connect(self.mainWidget.toggleSemantic)
