@@ -62,5 +62,167 @@ class LALGParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by LALGParser#subroutineDeclarationSection.
+    def enterSubroutineDeclarationSection(self, ctx:LALGParser.SubroutineDeclarationSectionContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#subroutineDeclarationSection.
+    def exitSubroutineDeclarationSection(self, ctx:LALGParser.SubroutineDeclarationSectionContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#procedureDeclaration.
+    def enterProcedureDeclaration(self, ctx:LALGParser.ProcedureDeclarationContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#procedureDeclaration.
+    def exitProcedureDeclaration(self, ctx:LALGParser.ProcedureDeclarationContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#formalParameterList.
+    def enterFormalParameterList(self, ctx:LALGParser.FormalParameterListContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#formalParameterList.
+    def exitFormalParameterList(self, ctx:LALGParser.FormalParameterListContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#formalParameterSection.
+    def enterFormalParameterSection(self, ctx:LALGParser.FormalParameterSectionContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#formalParameterSection.
+    def exitFormalParameterSection(self, ctx:LALGParser.FormalParameterSectionContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#compoundStatement.
+    def enterCompoundStatement(self, ctx:LALGParser.CompoundStatementContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#compoundStatement.
+    def exitCompoundStatement(self, ctx:LALGParser.CompoundStatementContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#statement.
+    def enterStatement(self, ctx:LALGParser.StatementContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#statement.
+    def exitStatement(self, ctx:LALGParser.StatementContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#assignmentStatement.
+    def enterAssignmentStatement(self, ctx:LALGParser.AssignmentStatementContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#assignmentStatement.
+    def exitAssignmentStatement(self, ctx:LALGParser.AssignmentStatementContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#procedureCallStatement.
+    def enterProcedureCallStatement(self, ctx:LALGParser.ProcedureCallStatementContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#procedureCallStatement.
+    def exitProcedureCallStatement(self, ctx:LALGParser.ProcedureCallStatementContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#conditionalStatement.
+    def enterConditionalStatement(self, ctx:LALGParser.ConditionalStatementContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#conditionalStatement.
+    def exitConditionalStatement(self, ctx:LALGParser.ConditionalStatementContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#loopStatement.
+    def enterLoopStatement(self, ctx:LALGParser.LoopStatementContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#loopStatement.
+    def exitLoopStatement(self, ctx:LALGParser.LoopStatementContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#expression.
+    def enterExpression(self, ctx:LALGParser.ExpressionContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#expression.
+    def exitExpression(self, ctx:LALGParser.ExpressionContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#relationalOperator.
+    def enterRelationalOperator(self, ctx:LALGParser.RelationalOperatorContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#relationalOperator.
+    def exitRelationalOperator(self, ctx:LALGParser.RelationalOperatorContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#simpleExpression.
+    def enterSimpleExpression(self, ctx:LALGParser.SimpleExpressionContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#simpleExpression.
+    def exitSimpleExpression(self, ctx:LALGParser.SimpleExpressionContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#term.
+    def enterTerm(self, ctx:LALGParser.TermContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#term.
+    def exitTerm(self, ctx:LALGParser.TermContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#factor.
+    def enterFactor(self, ctx:LALGParser.FactorContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#factor.
+    def exitFactor(self, ctx:LALGParser.FactorContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#variable.
+    def enterVariable(self, ctx:LALGParser.VariableContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#variable.
+    def exitVariable(self, ctx:LALGParser.VariableContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#expressionList.
+    def enterExpressionList(self, ctx:LALGParser.ExpressionListContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#expressionList.
+    def exitExpressionList(self, ctx:LALGParser.ExpressionListContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#number.
+    def enterNumber(self, ctx:LALGParser.NumberContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#number.
+    def exitNumber(self, ctx:LALGParser.NumberContext):
+        pass
+
+
 
 del LALGParser

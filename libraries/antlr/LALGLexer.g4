@@ -19,7 +19,7 @@ CONST_TRUE: 'true';
 CONST_FALSE: 'false';
 
 // Operators
-ATTRIB: ':=';
+ASSIGNMENT: ':=';
 SUM: '+';
 SUB: '-';
 MUL: '*';
@@ -30,8 +30,8 @@ AND: 'and';
 NOT: 'not';
 
 // Relational operators
-EQUAL: '=';
-DIFF: '<>';
+EQ: '=';
+NE: '<>';
 LT: '<';
 GT: '>';
 LTE: '<=';

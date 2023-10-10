@@ -142,7 +142,7 @@ class LALGLexer(Lexer):
     PROC_WRITE = 14
     CONST_TRUE = 15
     CONST_FALSE = 16
-    ATTRIB = 17
+    ASSIGNMENT = 17
     SUM = 18
     SUB = 19
     MUL = 20
@@ -151,8 +151,8 @@ class LALGLexer(Lexer):
     OR = 23
     AND = 24
     NOT = 25
-    EQUAL = 26
-    DIFF = 27
+    EQ = 26
+    NE = 27
     LT = 28
     GT = 29
     LTE = 30
@@ -189,17 +189,17 @@ class LALGLexer(Lexer):
     symbolicNames = [ "<INVALID>",
             "PROGRAM", "PROCEDURE", "VAR", "TYPE_INT", "TYPE_BOOL", "BEGIN", 
             "END", "IF", "THEN", "ELSE", "WHILE", "DO", "PROC_READ", "PROC_WRITE", 
-            "CONST_TRUE", "CONST_FALSE", "ATTRIB", "SUM", "SUB", "MUL", 
-            "DIV", "INT_DIV", "OR", "AND", "NOT", "EQUAL", "DIFF", "LT", 
-            "GT", "LTE", "GTE", "SEMICOLON", "COLON", "COMMA", "DOT", "LP", 
-            "RP", "LB", "RB", "IDENTIFIER", "INT", "REAL", "COMMENT", "MULTILINE_COMMENT", 
+            "CONST_TRUE", "CONST_FALSE", "ASSIGNMENT", "SUM", "SUB", "MUL", 
+            "DIV", "INT_DIV", "OR", "AND", "NOT", "EQ", "NE", "LT", "GT", 
+            "LTE", "GTE", "SEMICOLON", "COLON", "COMMA", "DOT", "LP", "RP", 
+            "LB", "RB", "IDENTIFIER", "INT", "REAL", "COMMENT", "MULTILINE_COMMENT", 
             "WS", "INVALID_TOKEN", "INVALID" ]
 
     ruleNames = [ "PROGRAM", "PROCEDURE", "VAR", "TYPE_INT", "TYPE_BOOL", 
                   "BEGIN", "END", "IF", "THEN", "ELSE", "WHILE", "DO", "PROC_READ", 
-                  "PROC_WRITE", "CONST_TRUE", "CONST_FALSE", "ATTRIB", "SUM", 
-                  "SUB", "MUL", "DIV", "INT_DIV", "OR", "AND", "NOT", "EQUAL", 
-                  "DIFF", "LT", "GT", "LTE", "GTE", "SEMICOLON", "COLON", 
+                  "PROC_WRITE", "CONST_TRUE", "CONST_FALSE", "ASSIGNMENT", 
+                  "SUM", "SUB", "MUL", "DIV", "INT_DIV", "OR", "AND", "NOT", 
+                  "EQ", "NE", "LT", "GT", "LTE", "GTE", "SEMICOLON", "COLON", 
                   "COMMA", "DOT", "LP", "RP", "LB", "RB", "LETTER", "DIGIT", 
                   "IDENTIFIER", "INT", "REAL", "COMMENT", "MULTILINE_COMMENT", 
                   "WS", "INVALID_TOKEN", "INVALID" ]
