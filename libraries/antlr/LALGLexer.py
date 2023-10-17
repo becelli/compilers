@@ -138,10 +138,10 @@ class LALGLexer(Lexer):
     ELSE = 10
     WHILE = 11
     DO = 12
-    PROC_READ = 13
-    PROC_WRITE = 14
-    CONST_TRUE = 15
-    CONST_FALSE = 16
+    READ_PROCEDURE = 13
+    WRITE_PROCEDURE = 14
+    LITERAL_TRUE = 15
+    LITERAL_FALSE = 16
     ASSIGNMENT = 17
     SUM = 18
     SUB = 19
@@ -151,12 +151,12 @@ class LALGLexer(Lexer):
     OR = 23
     AND = 24
     NOT = 25
-    EQ = 26
-    NE = 27
-    LT = 28
-    GT = 29
-    LTE = 30
-    GTE = 31
+    EQUAL = 26
+    NOT_EQUAL = 27
+    LESS_THAN = 28
+    GREATER_THAN = 29
+    LESS_THAN_OR_EQUAL = 30
+    GREATER_THAN_OR_EQUAL = 31
     SEMICOLON = 32
     COLON = 33
     COMMA = 34
@@ -188,21 +188,23 @@ class LALGLexer(Lexer):
 
     symbolicNames = [ "<INVALID>",
             "PROGRAM", "PROCEDURE", "VAR", "TYPE_INT", "TYPE_BOOL", "BEGIN", 
-            "END", "IF", "THEN", "ELSE", "WHILE", "DO", "PROC_READ", "PROC_WRITE", 
-            "CONST_TRUE", "CONST_FALSE", "ASSIGNMENT", "SUM", "SUB", "MUL", 
-            "DIV", "INT_DIV", "OR", "AND", "NOT", "EQ", "NE", "LT", "GT", 
-            "LTE", "GTE", "SEMICOLON", "COLON", "COMMA", "DOT", "LP", "RP", 
-            "LB", "RB", "IDENTIFIER", "INT", "REAL", "COMMENT", "MULTILINE_COMMENT", 
-            "WS", "INVALID_TOKEN", "INVALID" ]
+            "END", "IF", "THEN", "ELSE", "WHILE", "DO", "READ_PROCEDURE", 
+            "WRITE_PROCEDURE", "LITERAL_TRUE", "LITERAL_FALSE", "ASSIGNMENT", 
+            "SUM", "SUB", "MUL", "DIV", "INT_DIV", "OR", "AND", "NOT", "EQUAL", 
+            "NOT_EQUAL", "LESS_THAN", "GREATER_THAN", "LESS_THAN_OR_EQUAL", 
+            "GREATER_THAN_OR_EQUAL", "SEMICOLON", "COLON", "COMMA", "DOT", 
+            "LP", "RP", "LB", "RB", "IDENTIFIER", "INT", "REAL", "COMMENT", 
+            "MULTILINE_COMMENT", "WS", "INVALID_TOKEN", "INVALID" ]
 
     ruleNames = [ "PROGRAM", "PROCEDURE", "VAR", "TYPE_INT", "TYPE_BOOL", 
-                  "BEGIN", "END", "IF", "THEN", "ELSE", "WHILE", "DO", "PROC_READ", 
-                  "PROC_WRITE", "CONST_TRUE", "CONST_FALSE", "ASSIGNMENT", 
+                  "BEGIN", "END", "IF", "THEN", "ELSE", "WHILE", "DO", "READ_PROCEDURE", 
+                  "WRITE_PROCEDURE", "LITERAL_TRUE", "LITERAL_FALSE", "ASSIGNMENT", 
                   "SUM", "SUB", "MUL", "DIV", "INT_DIV", "OR", "AND", "NOT", 
-                  "EQ", "NE", "LT", "GT", "LTE", "GTE", "SEMICOLON", "COLON", 
-                  "COMMA", "DOT", "LP", "RP", "LB", "RB", "LETTER", "DIGIT", 
-                  "IDENTIFIER", "INT", "REAL", "COMMENT", "MULTILINE_COMMENT", 
-                  "WS", "INVALID_TOKEN", "INVALID" ]
+                  "EQUAL", "NOT_EQUAL", "LESS_THAN", "GREATER_THAN", "LESS_THAN_OR_EQUAL", 
+                  "GREATER_THAN_OR_EQUAL", "SEMICOLON", "COLON", "COMMA", 
+                  "DOT", "LP", "RP", "LB", "RB", "LETTER", "DIGIT", "IDENTIFIER", 
+                  "INT", "REAL", "COMMENT", "MULTILINE_COMMENT", "WS", "INVALID_TOKEN", 
+                  "INVALID" ]
 
     grammarFileName = "LALGLexer.g4"
 

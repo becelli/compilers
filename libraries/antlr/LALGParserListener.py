@@ -17,6 +17,15 @@ class LALGParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by LALGParser#type.
+    def enterType(self, ctx:LALGParser.TypeContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#type.
+    def exitType(self, ctx:LALGParser.TypeContext):
+        pass
+
+
     # Enter a parse tree produced by LALGParser#block.
     def enterBlock(self, ctx:LALGParser.BlockContext):
         pass
@@ -41,15 +50,6 @@ class LALGParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by LALGParser#variableDeclaration.
     def exitVariableDeclaration(self, ctx:LALGParser.VariableDeclarationContext):
-        pass
-
-
-    # Enter a parse tree produced by LALGParser#type.
-    def enterType(self, ctx:LALGParser.TypeContext):
-        pass
-
-    # Exit a parse tree produced by LALGParser#type.
-    def exitType(self, ctx:LALGParser.TypeContext):
         pass
 
 
@@ -221,6 +221,24 @@ class LALGParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by LALGParser#number.
     def exitNumber(self, ctx:LALGParser.NumberContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#literal.
+    def enterLiteral(self, ctx:LALGParser.LiteralContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#literal.
+    def exitLiteral(self, ctx:LALGParser.LiteralContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#ioProcedureCallStatement.
+    def enterIoProcedureCallStatement(self, ctx:LALGParser.IoProcedureCallStatementContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#ioProcedureCallStatement.
+    def exitIoProcedureCallStatement(self, ctx:LALGParser.IoProcedureCallStatementContext):
         pass
 
 

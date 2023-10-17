@@ -13,10 +13,10 @@ THEN: 'then';
 ELSE: 'else';
 WHILE: 'while';
 DO: 'do';
-PROC_READ: 'read';
-PROC_WRITE: 'write';
-CONST_TRUE: 'true';
-CONST_FALSE: 'false';
+READ_PROCEDURE: 'read';
+WRITE_PROCEDURE: 'write';
+LITERAL_TRUE: 'true';
+LITERAL_FALSE: 'false';
 
 // Operators
 ASSIGNMENT: ':=';
@@ -30,12 +30,12 @@ AND: 'and';
 NOT: 'not';
 
 // Relational operators
-EQ: '=';
-NE: '<>';
-LT: '<';
-GT: '>';
-LTE: '<=';
-GTE: '>=';
+EQUAL: '=';
+NOT_EQUAL: '<>';
+LESS_THAN: '<';
+GREATER_THAN: '>';
+LESS_THAN_OR_EQUAL: '<=';
+GREATER_THAN_OR_EQUAL: '>=';
 
 // Punctuation
 SEMICOLON: ';';

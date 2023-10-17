@@ -16,23 +16,26 @@ class LALGErrorListener(AntlrErrorListener):
     def reportAmbiguity(
         self, recognizer, dfa, startIndex, stopIndex, exact, ambigAlts, configs
     ):
-        self.errorOutput.append(
-            f"Ambiguity detected between tokens at positions {startIndex} and {stopIndex}. "
-            f"Alternative interpretations: {ambigAlts}. Exact match: {exact}"
-        )
+        pass
+        # self.errorOutput.append(
+        #     f"Ambiguity detected between tokens at positions {startIndex} and {stopIndex}. "
+        #     f"Alternative interpretations: {ambigAlts}. Exact match: {exact}"
+        # )
 
     def reportAttemptingFullContext(
         self, recognizer, dfa, startIndex, stopIndex, conflictingAlts, configs
     ):
-        self.errorOutput.append(
-            f"Attempting full context parsing due to conflict between tokens at positions "
-            f"{startIndex} and {stopIndex}. Conflicting interpretations: {conflictingAlts}"
-        )
+        pass
+        # self.errorOutput.append(
+        #     f"Attempting full context parsing due to conflict between tokens at positions "
+        #     f"{startIndex} and {stopIndex}. Conflicting interpretations: {conflictingAlts}"
+        # )
 
     def reportContextSensitivity(
         self, recognizer, dfa, startIndex, stopIndex, prediction, configs
     ):
-        self.errorOutput.append(
-            f"Context sensitivity detected when predicting token type {prediction} between "
-            f"positions {startIndex} and {stopIndex}"
-        )
+        pass
+        # self.errorOutput.append(
+        #     f"Context sensitivity detected when predicting token type {prediction} between "
+        #     f"positions {startIndex} and {stopIndex}"
+        # )

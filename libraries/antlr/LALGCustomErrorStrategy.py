@@ -9,19 +9,19 @@ from libraries.antlr.LALGParser import LALGParser
 
 class LALGCustomErrorStrategy(DefaultErrorStrategy):
     def recover(self, recognizer: Parser, exception: RecognitionException):
-        super().recover(recognizer, exception)
+        return super().recover(recognizer, exception)
 
-        inputStream = recognizer.getInputStream()
-        startIndex = int(inputStream.index)
-        while inputStream.LA(1) != Token.EOF:
-            currentTokenType = inputStream.LA(1)
-            if currentTokenType in self.startTokens:
-                break
-            else:
-                recognizer.consume()
+        # inputStream = recognizer.getInputStream()
+        # startIndex = int(inputStream.index)
+        # while inputStream.LA(1) != Token.EOF:
+        #     currentTokenType = inputStream.LA(1)
+        #     if currentTokenType in self.startTokens:
+        #         break
+        #     else:
+        #         recognizer.consume()
 
-        if inputStream.LA(1) == Token.EOF:
-            inputStream.seek(startIndex)
+        # if inputStream.LA(1) == Token.EOF:
+        #     inputStream.seek(startIndex)
 
     @property
     def startTokens(self) -> set:
