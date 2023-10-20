@@ -8,8 +8,14 @@ program: PROGRAM IDENTIFIER SEMICOLON block DOT EOF;
 
 type: (TYPE_BOOL | TYPE_INT);
 
+// subroutineDeclarationSection could be empty, so even though it should be optional
+// here, it is being declared as a obligatory.
+// This happens because if we don't do that, ANTLR4 will not be able to identify if:
+// 1 - The rule is present, but empty
+// 2 - The rule is not present at all
+// error message: rule block contains an optional block with at least one alternative that can match an empty string
 block:
-	variableDeclarationSection? subroutineDeclarationSection? compoundStatement;
+	variableDeclarationSection? subroutineDeclarationSection compoundStatement;
 
 // Variable declaration
 variableDeclarationSection:
@@ -29,7 +35,7 @@ procedureDeclaration:
 formalParameterList:
 	LP formalParameterSection (SEMICOLON formalParameterSection)* RP;
 
-formalParameterSection: VAR identifierList COLON type;
+formalParameterSection: VAR? identifierList COLON type;
 
 // Commands
 compoundStatement: BEGIN statement (SEMICOLON statement)* END;

@@ -14,11 +14,11 @@ def serializedATN():
         6,2,7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,
         2,14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,
         7,20,2,21,7,21,2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,1,0,1,0,1,
-        0,1,0,1,0,1,0,1,0,1,1,1,1,1,2,3,2,63,8,2,1,2,3,2,66,8,2,1,2,1,2,
-        1,3,1,3,1,3,5,3,73,8,3,10,3,12,3,76,9,3,1,3,1,3,1,4,1,4,1,4,1,5,
-        1,5,1,5,5,5,86,8,5,10,5,12,5,89,9,5,1,6,1,6,1,6,5,6,94,8,6,10,6,
-        12,6,97,9,6,1,7,1,7,1,7,3,7,102,8,7,1,7,1,7,1,7,1,8,1,8,1,8,1,8,
-        5,8,111,8,8,10,8,12,8,114,9,8,1,8,1,8,1,9,1,9,1,9,1,9,1,9,1,10,1,
+        0,1,0,1,0,1,0,1,0,1,1,1,1,1,2,3,2,63,8,2,1,2,1,2,1,2,1,3,1,3,1,3,
+        5,3,71,8,3,10,3,12,3,74,9,3,1,3,1,3,1,4,1,4,1,4,1,5,1,5,1,5,5,5,
+        84,8,5,10,5,12,5,87,9,5,1,6,1,6,1,6,5,6,92,8,6,10,6,12,6,95,9,6,
+        1,7,1,7,1,7,3,7,100,8,7,1,7,1,7,1,7,1,8,1,8,1,8,1,8,5,8,109,8,8,
+        10,8,12,8,112,9,8,1,8,1,8,1,9,3,9,117,8,9,1,9,1,9,1,9,1,9,1,10,1,
         10,1,10,1,10,5,10,127,8,10,10,10,12,10,130,9,10,1,10,1,10,1,11,1,
         11,1,11,1,11,1,11,1,11,3,11,140,8,11,1,12,1,12,1,12,1,12,1,13,1,
         13,1,13,1,13,1,13,3,13,151,8,13,1,14,1,14,1,14,1,14,1,14,1,14,3,
@@ -31,30 +31,30 @@ def serializedATN():
         2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,
         48,50,0,8,1,0,4,5,1,0,26,31,1,0,18,19,2,0,18,19,23,23,2,0,20,22,
         24,24,1,0,41,42,1,0,15,16,1,0,13,14,223,0,52,1,0,0,0,2,59,1,0,0,
-        0,4,62,1,0,0,0,6,69,1,0,0,0,8,79,1,0,0,0,10,82,1,0,0,0,12,95,1,0,
-        0,0,14,98,1,0,0,0,16,106,1,0,0,0,18,117,1,0,0,0,20,122,1,0,0,0,22,
+        0,4,62,1,0,0,0,6,67,1,0,0,0,8,77,1,0,0,0,10,80,1,0,0,0,12,93,1,0,
+        0,0,14,96,1,0,0,0,16,104,1,0,0,0,18,116,1,0,0,0,20,122,1,0,0,0,22,
         139,1,0,0,0,24,141,1,0,0,0,26,145,1,0,0,0,28,152,1,0,0,0,30,160,
         1,0,0,0,32,165,1,0,0,0,34,171,1,0,0,0,36,174,1,0,0,0,38,184,1,0,
         0,0,40,201,1,0,0,0,42,203,1,0,0,0,44,207,1,0,0,0,46,215,1,0,0,0,
         48,217,1,0,0,0,50,219,1,0,0,0,52,53,5,1,0,0,53,54,5,40,0,0,54,55,
         5,32,0,0,55,56,3,4,2,0,56,57,5,35,0,0,57,58,5,0,0,1,58,1,1,0,0,0,
         59,60,7,0,0,0,60,3,1,0,0,0,61,63,3,6,3,0,62,61,1,0,0,0,62,63,1,0,
-        0,0,63,65,1,0,0,0,64,66,3,12,6,0,65,64,1,0,0,0,65,66,1,0,0,0,66,
-        67,1,0,0,0,67,68,3,20,10,0,68,5,1,0,0,0,69,74,3,8,4,0,70,71,5,32,
-        0,0,71,73,3,8,4,0,72,70,1,0,0,0,73,76,1,0,0,0,74,72,1,0,0,0,74,75,
-        1,0,0,0,75,77,1,0,0,0,76,74,1,0,0,0,77,78,5,32,0,0,78,7,1,0,0,0,
-        79,80,3,2,1,0,80,81,3,10,5,0,81,9,1,0,0,0,82,87,5,40,0,0,83,84,5,
-        34,0,0,84,86,5,40,0,0,85,83,1,0,0,0,86,89,1,0,0,0,87,85,1,0,0,0,
-        87,88,1,0,0,0,88,11,1,0,0,0,89,87,1,0,0,0,90,91,3,14,7,0,91,92,5,
-        32,0,0,92,94,1,0,0,0,93,90,1,0,0,0,94,97,1,0,0,0,95,93,1,0,0,0,95,
-        96,1,0,0,0,96,13,1,0,0,0,97,95,1,0,0,0,98,99,5,2,0,0,99,101,5,40,
-        0,0,100,102,3,16,8,0,101,100,1,0,0,0,101,102,1,0,0,0,102,103,1,0,
-        0,0,103,104,5,32,0,0,104,105,3,4,2,0,105,15,1,0,0,0,106,107,5,36,
-        0,0,107,112,3,18,9,0,108,109,5,32,0,0,109,111,3,18,9,0,110,108,1,
-        0,0,0,111,114,1,0,0,0,112,110,1,0,0,0,112,113,1,0,0,0,113,115,1,
-        0,0,0,114,112,1,0,0,0,115,116,5,37,0,0,116,17,1,0,0,0,117,118,5,
-        3,0,0,118,119,3,10,5,0,119,120,5,33,0,0,120,121,3,2,1,0,121,19,1,
-        0,0,0,122,123,5,6,0,0,123,128,3,22,11,0,124,125,5,32,0,0,125,127,
+        0,0,63,64,1,0,0,0,64,65,3,12,6,0,65,66,3,20,10,0,66,5,1,0,0,0,67,
+        72,3,8,4,0,68,69,5,32,0,0,69,71,3,8,4,0,70,68,1,0,0,0,71,74,1,0,
+        0,0,72,70,1,0,0,0,72,73,1,0,0,0,73,75,1,0,0,0,74,72,1,0,0,0,75,76,
+        5,32,0,0,76,7,1,0,0,0,77,78,3,2,1,0,78,79,3,10,5,0,79,9,1,0,0,0,
+        80,85,5,40,0,0,81,82,5,34,0,0,82,84,5,40,0,0,83,81,1,0,0,0,84,87,
+        1,0,0,0,85,83,1,0,0,0,85,86,1,0,0,0,86,11,1,0,0,0,87,85,1,0,0,0,
+        88,89,3,14,7,0,89,90,5,32,0,0,90,92,1,0,0,0,91,88,1,0,0,0,92,95,
+        1,0,0,0,93,91,1,0,0,0,93,94,1,0,0,0,94,13,1,0,0,0,95,93,1,0,0,0,
+        96,97,5,2,0,0,97,99,5,40,0,0,98,100,3,16,8,0,99,98,1,0,0,0,99,100,
+        1,0,0,0,100,101,1,0,0,0,101,102,5,32,0,0,102,103,3,4,2,0,103,15,
+        1,0,0,0,104,105,5,36,0,0,105,110,3,18,9,0,106,107,5,32,0,0,107,109,
+        3,18,9,0,108,106,1,0,0,0,109,112,1,0,0,0,110,108,1,0,0,0,110,111,
+        1,0,0,0,111,113,1,0,0,0,112,110,1,0,0,0,113,114,5,37,0,0,114,17,
+        1,0,0,0,115,117,5,3,0,0,116,115,1,0,0,0,116,117,1,0,0,0,117,118,
+        1,0,0,0,118,119,3,10,5,0,119,120,5,33,0,0,120,121,3,2,1,0,121,19,
+        1,0,0,0,122,123,5,6,0,0,123,128,3,22,11,0,124,125,5,32,0,0,125,127,
         3,22,11,0,126,124,1,0,0,0,127,130,1,0,0,0,128,126,1,0,0,0,128,129,
         1,0,0,0,129,131,1,0,0,0,130,128,1,0,0,0,131,132,5,7,0,0,132,21,1,
         0,0,0,133,140,3,24,12,0,134,140,3,26,13,0,135,140,3,50,25,0,136,
@@ -84,7 +84,7 @@ def serializedATN():
         0,0,0,211,214,1,0,0,0,212,210,1,0,0,0,212,213,1,0,0,0,213,45,1,0,
         0,0,214,212,1,0,0,0,215,216,7,5,0,0,216,47,1,0,0,0,217,218,7,6,0,
         0,218,49,1,0,0,0,219,220,7,7,0,0,220,221,5,36,0,0,221,222,3,42,21,
-        0,222,223,5,37,0,0,223,51,1,0,0,0,18,62,65,74,87,95,101,112,128,
+        0,222,223,5,37,0,0,223,51,1,0,0,0,18,62,72,85,93,99,110,116,128,
         139,150,158,169,174,181,189,201,205,212
     ]
 
@@ -335,16 +335,16 @@ class LALGParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
+        def subroutineDeclarationSection(self):
+            return self.getTypedRuleContext(LALGParser.SubroutineDeclarationSectionContext,0)
+
+
         def compoundStatement(self):
             return self.getTypedRuleContext(LALGParser.CompoundStatementContext,0)
 
 
         def variableDeclarationSection(self):
             return self.getTypedRuleContext(LALGParser.VariableDeclarationSectionContext,0)
-
-
-        def subroutineDeclarationSection(self):
-            return self.getTypedRuleContext(LALGParser.SubroutineDeclarationSectionContext,0)
 
 
         def getRuleIndex(self):
@@ -376,15 +376,9 @@ class LALGParser ( Parser ):
                 self.variableDeclarationSection()
 
 
+            self.state = 64
+            self.subroutineDeclarationSection()
             self.state = 65
-            self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,1,self._ctx)
-            if la_ == 1:
-                self.state = 64
-                self.subroutineDeclarationSection()
-
-
-            self.state = 67
             self.compoundStatement()
         except RecognitionException as re:
             localctx.exception = re
@@ -435,22 +429,22 @@ class LALGParser ( Parser ):
         self.enterRule(localctx, 6, self.RULE_variableDeclarationSection)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 69
+            self.state = 67
             self.variableDeclaration()
-            self.state = 74
+            self.state = 72
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,2,self._ctx)
+            _alt = self._interp.adaptivePredict(self._input,1,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt==1:
-                    self.state = 70
+                    self.state = 68
                     self.match(LALGParser.SEMICOLON)
-                    self.state = 71
+                    self.state = 69
                     self.variableDeclaration() 
-                self.state = 76
+                self.state = 74
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,2,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input,1,self._ctx)
 
-            self.state = 77
+            self.state = 75
             self.match(LALGParser.SEMICOLON)
         except RecognitionException as re:
             localctx.exception = re
@@ -496,9 +490,9 @@ class LALGParser ( Parser ):
         self.enterRule(localctx, 8, self.RULE_variableDeclaration)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 79
+            self.state = 77
             self.type_()
-            self.state = 80
+            self.state = 78
             self.identifierList()
         except RecognitionException as re:
             localctx.exception = re
@@ -549,17 +543,17 @@ class LALGParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 82
+            self.state = 80
             self.match(LALGParser.IDENTIFIER)
-            self.state = 87
+            self.state = 85
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==34:
-                self.state = 83
+                self.state = 81
                 self.match(LALGParser.COMMA)
-                self.state = 84
+                self.state = 82
                 self.match(LALGParser.IDENTIFIER)
-                self.state = 89
+                self.state = 87
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -613,15 +607,15 @@ class LALGParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 95
+            self.state = 93
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==2:
-                self.state = 90
+                self.state = 88
                 self.procedureDeclaration()
-                self.state = 91
+                self.state = 89
                 self.match(LALGParser.SEMICOLON)
-                self.state = 97
+                self.state = 95
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -679,21 +673,21 @@ class LALGParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 98
+            self.state = 96
             self.match(LALGParser.PROCEDURE)
-            self.state = 99
+            self.state = 97
             self.match(LALGParser.IDENTIFIER)
-            self.state = 101
+            self.state = 99
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==36:
-                self.state = 100
+                self.state = 98
                 self.formalParameterList()
 
 
-            self.state = 103
+            self.state = 101
             self.match(LALGParser.SEMICOLON)
-            self.state = 104
+            self.state = 102
             self.block()
         except RecognitionException as re:
             localctx.exception = re
@@ -751,23 +745,23 @@ class LALGParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 106
+            self.state = 104
             self.match(LALGParser.LP)
-            self.state = 107
+            self.state = 105
             self.formalParameterSection()
-            self.state = 112
+            self.state = 110
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==32:
-                self.state = 108
+                self.state = 106
                 self.match(LALGParser.SEMICOLON)
-                self.state = 109
+                self.state = 107
                 self.formalParameterSection()
-                self.state = 114
+                self.state = 112
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 115
+            self.state = 113
             self.match(LALGParser.RP)
         except RecognitionException as re:
             localctx.exception = re
@@ -785,9 +779,6 @@ class LALGParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def VAR(self):
-            return self.getToken(LALGParser.VAR, 0)
-
         def identifierList(self):
             return self.getTypedRuleContext(LALGParser.IdentifierListContext,0)
 
@@ -798,6 +789,9 @@ class LALGParser ( Parser ):
         def type_(self):
             return self.getTypedRuleContext(LALGParser.TypeContext,0)
 
+
+        def VAR(self):
+            return self.getToken(LALGParser.VAR, 0)
 
         def getRuleIndex(self):
             return LALGParser.RULE_formalParameterSection
@@ -817,10 +811,17 @@ class LALGParser ( Parser ):
 
         localctx = LALGParser.FormalParameterSectionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 18, self.RULE_formalParameterSection)
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 117
-            self.match(LALGParser.VAR)
+            self.state = 116
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            if _la==3:
+                self.state = 115
+                self.match(LALGParser.VAR)
+
+
             self.state = 118
             self.identifierList()
             self.state = 119
