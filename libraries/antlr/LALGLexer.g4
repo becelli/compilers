@@ -50,7 +50,6 @@ RB: ']';
 // Identifier
 fragment LETTER: '_' | [A-Z] | [a-z];
 fragment DIGIT: [0-9];
-// IDENTIFIER: LETTER (LETTER | DIGIT)*;
 
 IDENTIFIER: LETTER (LETTER | DIGIT)*;
 
