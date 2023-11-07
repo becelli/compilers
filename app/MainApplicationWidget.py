@@ -15,12 +15,12 @@ from app.entities.CompilerSteps import CompilerSteps
 from app.lexer.ColorMapper import ColorMapper
 from app.lexer.Colors import Colors
 from app.lexer.CustomLexer import CustomLexer
-from libraries.antlr.LALGCustomErrorStrategy import LALGCustomErrorStrategy
-from libraries.antlr.LALGErrorListener import LALGErrorListener
+from libraries.antlr.custom.LALGCustomErrorStrategy import LALGCustomErrorStrategy
+from libraries.antlr.custom.LALGErrorListener import LALGErrorListener
 from libraries.antlr.LALGLexer import LALGLexer
 from libraries.antlr.LALGParser import LALGParser
 from libraries.state.AppState import AppState
-
+from libraries.antlr.custom.LALGSemanticAnalyzer import LALGSemanticAnalyzer
 
 class MainApplicationWidget(QWidget):
     def __init__(self, state: AppState):
@@ -147,7 +147,14 @@ class MainApplicationWidget(QWidget):
         parser.addErrorListener(listener)
         parser._errHandler = LALGCustomErrorStrategy()
 
-        parser.program()
+        tree = parser.program()
+
+        if parser.getNumberOfSyntaxErrors() > 0:
+            return
+        
+        semanticAnalyzer = LALGSemanticAnalyzer(listener)
+        semanticAnalyzer.visit(tree)
+        
 
     def toggleLexer(self):
         self.updateLabel(CompilerSteps.LEXER)
