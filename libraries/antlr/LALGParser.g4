@@ -23,7 +23,6 @@ variableDeclarationSection:
 
 variableDeclaration: type identifierList;
 
-// add semicolon to this?
 identifierList: IDENTIFIER (COMMA IDENTIFIER)*;
 
 // Subroutine declaration
