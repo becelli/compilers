@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from abc import ABC
 
 
-VariableType = Literal["int", "boolean"]
+VariableType = Literal["int", "boolean", "real", "unknown"]
 
 
 @dataclass
@@ -47,10 +47,109 @@ class Scope:
         return self.symbols.get(name)
 
 
+@dataclass
+class TypeExtractor:
+    scope: Scope
+    listener: LALGErrorListener
+
+    def from_factor(self, factor: LALGParser.FactorContext) -> VariableType:
+        # Check if the factor is a variable
+        if factor.variable():
+            # Retrieve and return the variable's type from the symbol table
+            identifier = factor.variable().IDENTIFIER()  # type: ignore
+            variable_name = identifier.getText()
+            symbol = self.scope.resolve(variable_name)
+            if (
+                symbol is None
+                or not isinstance(symbol, VariableSymbol)
+                or not isinstance(symbol, ProcedureParamSymbol)
+            ):
+                raise TypeCheckError(f"Variable {variable_name} not declared")
+            else:
+                symbol.is_used = True
+                return symbol.type
+        # Check if the factor is a number
+        elif factor.number():
+            if factor.number().INT():  # type: ignore
+                return "int"
+            elif factor.number().REAL():  # type: ignore
+                return "real"
+        # Check if the factor is a literal
+        elif factor.literal():
+            return "boolean"
+        # Check if the factor is a sub-expression
+        elif factor.expression():
+            return self.from_expression(factor.expression())  # type: ignore
+        # Check if the factor is a negated factor
+        elif factor.NOT():
+            # If there is a NOT operator, the type must be boolean
+            return "boolean"
+
+        raise TypeCheckError("Unknown factor type")
+
+    def from_term(self, term: LALGParser.TermContext) -> str:
+        factors: list = term.factor()  # type: ignore
+        operation_types = set()
+
+        for i, factor in enumerate(factors):
+            factor_type = self.from_factor(factor)
+            operation_types.add(factor_type)
+
+            if (
+                i > 0
+            ):  # If there's more than one factor, check the operations between them
+                operation = term.children[  # type: ignore
+                    i * 2 - 1
+                ]  # The operation is every second child (1, 3, 5, ...)
+                if operation.getText() in ["*", "/", "div", "and"]:
+                    if factor_type not in ["integer", "real"]:
+                        raise TypeCheckError("Invalid type for arithmetic operation")
+                else:
+                    raise TypeCheckError("Unknown operation type")
+
+        if len(operation_types) > 1:
+            raise TypeCheckError("Mixed types in term without coercion")
+
+        return operation_types.pop()
+
+    def from_simple_expression(
+        self, simple_expression: LALGParser.SimpleExpressionContext
+    ) -> VariableType:
+        terms: list = simple_expression.term()  # type: ignore
+        types_in_expression = set()
+
+        for i, term in enumerate(terms):
+            term_type = self.from_term(term)
+            types_in_expression.add(term_type)
+
+            if i > 0:  # If there's more than one term, check the operators between them
+                operator = simple_expression.children[  # type: ignore
+                    i * 2 - 1
+                ]  # The operator is every second child (1, 3, 5, ...)
+                if operator.getText() in ["+", "-", "or"]:
+                    if term_type not in ["integer", "real"]:
+                        raise TypeCheckError("Invalid type for additive operation")
+                else:
+                    raise TypeCheckError("Unknown operator type")
+
+        if len(types_in_expression) > 1:
+            raise TypeCheckError("Mixed types in simple expression without coercion")
+
+        return types_in_expression.pop()  # There should only be one type in the set
+
+    def from_expression(self, expression: LALGParser.ExpressionContext) -> VariableType:
+        if expression.relationalOperator() is not None:
+            return "boolean"
+
+        simple_expression = expression.simpleExpression()[0]  # type: ignore
+        return self.from_simple_expression(simple_expression)
+
+
 class LALGSemanticAnalyzer(LALGParserVisitor):
     def __init__(self, errorListener: LALGErrorListener):
         self.current_scope = Scope("global")
         self.errorListener = errorListener
+        self.type_extractor = TypeExtractor(self.current_scope, errorListener)
 
     def enterScope(self, scope_name: str):
         scope = Scope(scope_name, self.current_scope)
@@ -139,14 +238,20 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                     f"Procedure {proc_name} expected {proc_params_length} parameters, got {expression_list_length}",
                 )
 
-            for param in zip(proc_params, expressions_list):
-                param_symbol, expression = param
-                expression_type = self.get_expression_type(expression)
-                if expression_type != param_symbol.type:
+            types_from_proc_params = [param.type for param in proc_params]
+            types_from_expression_list = [
+                self.type_extractor.from_expression(expression)
+                for expression in expressions_list
+            ]
+
+            for proc_params_type, expression_type in zip(
+                types_from_proc_params, types_from_expression_list
+            ):
+                if proc_params_type != expression_type:
                     self.errorListener.semanticError(
                         ctx.IDENTIFIER().symbol.line,  # type: ignore
                         ctx.IDENTIFIER().symbol.column,  # type: ignore
-                        f"Procedure {proc_name} expected {param_symbol.type} parameter, got {expression_type}",
+                        f"Procedure {proc_name} expected {proc_params_type} parameter, got {expression_type}",
                     )
 
         else:
@@ -157,13 +262,6 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                     f"Procedure {proc_name} expected {len(proc_symbol.params)} parameters, got 0",
                 )
 
-    def get_expression_type(
-        self, expression: LALGParser.ExpressionContext
-    ) -> VariableType:
-        if expression.relationalOperator() is not None:
-            return "boolean"
 
-        simple_expression: LALGParser.SimpleExpressionContext = expression.simpleExpression()[0]  # type: ignore
-
-        # TODO: How to extract the type of the expression, looking inside "simpleExpression"?
-        return "int"
+class TypeCheckError(Exception):
+    pass

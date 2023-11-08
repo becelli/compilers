@@ -60,8 +60,7 @@ loopStatement: WHILE expression statement;
 
 // Expressions
 
-expression:
-	simpleExpression (relationalOperator simpleExpression)?;
+expression: simpleExpression (relationalOperator simpleExpression)?;
 
 relationalOperator:
 	EQUAL
