@@ -11,6 +11,10 @@ from abc import ABC
 VariableType = Literal["int", "boolean", "real", "unknown"]
 
 
+class TypeCheckError(Exception):
+    pass
+
+
 @dataclass
 class Symbol(ABC):
     name: str
@@ -59,10 +63,9 @@ class TypeExtractor:
             identifier = factor.variable().IDENTIFIER()  # type: ignore
             variable_name = identifier.getText()
             symbol = self.scope.resolve(variable_name)
-            if (
-                symbol is None
-                or not isinstance(symbol, VariableSymbol)
-                or not isinstance(symbol, ProcedureParamSymbol)
+            if symbol is None or not (
+                isinstance(symbol, VariableSymbol)
+                or isinstance(symbol, ProcedureParamSymbol)
             ):
                 raise TypeCheckError(f"Variable {variable_name} not declared")
             else:
@@ -189,7 +192,7 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                 f"Procedure {proc_name} already declared",
             )
         else:
-            self.enterScope(proc_name)
+            self.enterScope(scope_name=proc_name)
             assert self.current_scope.enclosing_scope is not None
             self.visitChildren(ctx)
             param_condition = lambda symbol: isinstance(symbol, ProcedureParamSymbol)
@@ -226,7 +229,7 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
             return self.errorListener.semanticError(line, column, msg)
 
         proc_expression_list: list | None = ctx.expressionList()
-        if proc_expression_list:
+        if proc_expression_list is not None:
             expressions_list: list = proc_expression_list.expression()
             expression_list_length = len(expressions_list)
             proc_params = proc_symbol.params
@@ -261,7 +264,3 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                     ctx.IDENTIFIER().symbol.column,  # type: ignore
                     f"Procedure {proc_name} expected {len(proc_symbol.params)} parameters, got 0",
                 )
-
-
-class TypeCheckError(Exception):
-    pass
