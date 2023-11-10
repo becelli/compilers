@@ -1,5 +1,6 @@
 from __future__ import annotations
 from re import I
+from tkinter import LabelFrame
 from typing import Literal, Optional
 from libraries.antlr.LALGParser import LALGParser
 from libraries.antlr.LALGParserVisitor import LALGParserVisitor
@@ -263,4 +264,61 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                     ctx.IDENTIFIER().symbol.line,  # type: ignore
                     ctx.IDENTIFIER().symbol.column,  # type: ignore
                     f"Procedure {proc_name} expected {len(proc_symbol.params)} parameters, got 0",
+                )
+
+    def visitAssignmentStatement(self, ctx: LALGParser.AssignmentStatementContext):
+        variable = ctx.variable()
+        variable_name = variable.IDENTIFIER().getText()
+        symbol = self.current_scope.resolve(variable_name)
+        if symbol is None or not (
+            isinstance(symbol, VariableSymbol)
+            or isinstance(symbol, ProcedureParamSymbol)
+        ):
+            identifier = ctx.IDENTIFIER()
+            line, column = identifier.symbol.line, identifier.symbol.column
+            msg = f"Variable {variable_name} not declared"
+            return self.errorListener.semanticError(line, column, msg)
+
+        symbol.is_used = True
+        expression = ctx.expression()
+        expression_type = self.type_extractor.from_expression(expression)
+        if symbol.type != expression_type:
+            self.errorListener.semanticError(
+                ctx.IDENTIFIER().symbol.line,  # type: ignore
+                ctx.IDENTIFIER().symbol.column,  # type: ignore
+                f"Variable {variable_name} expected {symbol.type} type, got {expression_type}",
+            )
+
+    def visitConditionalStatement(self, ctx: LALGParser.ConditionalStatementContext):
+        expression = ctx.expression()
+        expression_type = self.type_extractor.from_expression(expression)
+        if expression_type != "boolean":
+            self.errorListener.semanticError(
+                ctx.IF().symbol.line,  # type: ignore
+                ctx.IF().symbol.column,  # type: ignore
+                f"Expected boolean expression, got {expression_type}",
+            )
+
+    def visitLoopStatement(self, ctx: LALGParser.LoopStatementContext):
+        expression = ctx.expression()
+        expression_type = self.type_extractor.from_expression(expression)
+        if expression_type != "boolean":
+            self.errorListener.semanticError(
+                ctx.WHILE().symbol.line,  # type: ignore
+                ctx.WHILE().symbol.column,  # type: ignore
+                f"Expected boolean expression, got {expression_type}",
+            )
+
+    def visitTerm(self, ctx: LALGParser.TermContext):
+        # dividsion of integers only allowed with INT_DIV
+        if ctx.INT_DIV():
+            left_term = ctx.factor(0)
+            right_term = ctx.factor(1)
+            left_type = self.type_extractor.from_factor(left_term)
+            right_type = self.type_extractor.from_factor(right_term)
+            if left_type != "integer" or right_type != "integer":
+                self.errorListener.semanticError(
+                    ctx.INT_DIV().symbol.line,  # type: ignore
+                    ctx.INT_DIV().symbol.column,  # type: ignore
+                    f"Expected integer expression, got {left_type} and {right_type}",
                 )
