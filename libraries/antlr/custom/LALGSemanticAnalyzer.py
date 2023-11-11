@@ -106,7 +106,7 @@ class TypeExtractor:
                     i * 2 - 1
                 ]  # The operation is every second child (1, 3, 5, ...)
                 if operation.getText() in ["*", "/", "div", "and"]:
-                    if factor_type not in ["integer", "real"]:
+                    if factor_type not in ["int", "real"]:
                         raise TypeCheckError("Invalid type for arithmetic operation")
                 else:
                     raise TypeCheckError("Unknown operation type")
@@ -131,7 +131,7 @@ class TypeExtractor:
                     i * 2 - 1
                 ]  # The operator is every second child (1, 3, 5, ...)
                 if operator.getText() in ["+", "-", "or"]:
-                    if term_type not in ["integer", "real"]:
+                    if term_type not in ["int", "real"]:
                         raise TypeCheckError("Invalid type for additive operation")
                 else:
                     raise TypeCheckError("Unknown operator type")
