@@ -276,13 +276,13 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                 for expression in expressions_list
             ]
 
-            for proc_params_type, expression_type in zip(
+            for i, (proc_params_type, expression_type) in enumerate(zip(
                 types_from_proc_params, types_from_expression_list
-            ):
+            )):
                 if proc_params_type != expression_type:
                     self.errorListener.semanticError(
-                        ctx.IDENTIFIER().symbol.line,  # type: ignore
-                        ctx.IDENTIFIER().symbol.column,  # type: ignore
+                        expressions_list[i].start.line,
+                        expressions_list[i].start.column,
                         f"Procedure {proc_name} expected {proc_params_type} parameter, got {expression_type}",
                     )
 
