@@ -276,6 +276,8 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
             line, column = identifier.symbol.line, identifier.symbol.column  # type: ignore
             msg = f"Procedure {proc_name} not declared"
             return self.errorListener.semanticError(line, column, msg)
+        else:
+            proc_symbol.is_used = True
 
         proc_expression_list: list | None = ctx.expressionList()
         if proc_expression_list is not None:
@@ -332,8 +334,8 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
         expression_type = self.type_extractor.from_expression(expression)
         if symbol.type != expression_type:
             self.errorListener.semanticError(
-                ctx.IDENTIFIER().symbol.line,  # type: ignore
-                ctx.IDENTIFIER().symbol.column,  # type: ignore
+                variable.IDENTIFIER().symbol.line,  # type: ignore
+                variable.IDENTIFIER().symbol.column,  # type: ignore
                 f"Variable {variable_name} expected {symbol.type} type, got {expression_type}",
             )
 
