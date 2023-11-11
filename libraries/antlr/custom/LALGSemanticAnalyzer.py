@@ -6,7 +6,7 @@ from libraries.antlr.LALGParser import LALGParser
 from libraries.antlr.LALGParserVisitor import LALGParserVisitor
 from libraries.antlr.custom.LALGErrorListener import LALGErrorListener
 from dataclasses import dataclass
-from abc import ABC
+from abc import ABC, abstractmethod
 
 
 VariableType = Literal["int", "boolean", "real", "unknown"]
@@ -17,9 +17,18 @@ class TypeCheckError(Exception):
 
 
 @dataclass
+class Position:
+    line: int
+    column: int
+
+    def from_symbol(symbol):
+        return Position(symbol.line, symbol.column)
+
+
+@dataclass
 class Symbol(ABC):
     name: str
-
+    source: Position
 
 @dataclass
 class VariableSymbol(Symbol):
@@ -37,6 +46,9 @@ class ProcedureParamSymbol(Symbol):
 class ProcedureSymbol(Symbol):
     params: list[VariableSymbol]
     is_used: bool = False
+
+    def get_family():
+        return "Procedure"
 
 
 class Scope:
@@ -207,7 +219,9 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                     f"Variable {variable_name} already declared in the {self.current_scope.scope_name} scope",
                 )
             else:
-                self.current_scope.define(VariableSymbol(variable_name, var_type))
+                self.current_scope.define(
+                    VariableSymbol(variable_name, Position.from_symbol(identifier.symbol), var_type)
+                )
 
         self.visitChildren(ctx)
 
@@ -224,9 +238,15 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
             self.enterScope(scope_name=proc_name)
             assert self.current_scope.enclosing_scope is not None
             self.visitChildren(ctx)
-            param_condition = lambda symbol: isinstance(symbol, ProcedureParamSymbol)
+            def param_condition(symbol): return isinstance(
+                symbol, ProcedureParamSymbol)
             collected_symbols = self.current_scope.symbols.values()
-            symbol = ProcedureSymbol(proc_name, list(filter(param_condition, collected_symbols)))  # type: ignore
+            identifier = ctx.IDENTIFIER()
+            symbol = ProcedureSymbol(
+                proc_name,
+                Position.from_symbol(identifier.symbol),
+                list(filter(param_condition, collected_symbols))
+            )  # type: ignore
             self.current_scope.enclosing_scope.define(symbol)
             self.exitScope()
 
@@ -243,7 +263,7 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                     msg = f"Param {variable_name} is duplicated in the procedure {self.current_scope.scope_name}"
                     self.errorListener.semanticError(line, column, msg)
                 else:
-                    symbol = ProcedureParamSymbol(variable_name, var_type)
+                    symbol = ProcedureParamSymbol(variable_name, Position.from_symbol(identifier.symbol), var_type)
                     self.current_scope.define(symbol)
 
     def visitProcedureCallStatement(
@@ -349,4 +369,23 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                     ctx.INT_DIV().symbol.line,  # type: ignore
                     ctx.INT_DIV().symbol.column,  # type: ignore
                     f"Expected integer expression, got {left_type} and {right_type}",
+                )
+
+    def visitBlock(self, ctx: LALGParser.BlockContext):
+        self.visitChildren(ctx)
+        for symbol in self.current_scope.symbols.values():
+            if not symbol.is_used:
+                symbol_family: str # Deve ter uma forma melhor de fazer isso
+                if isinstance(symbol, VariableSymbol):
+                    symbol_family = "Variable"
+                elif isinstance(symbol, ProcedureParamSymbol):
+                    symbol_family = "Parameter"
+                elif isinstance(symbol, ProcedureSymbol):
+                    symbol_family = "Procedure"
+                else:
+                    symbol_family = "Unknown"
+                self.errorListener.semanticError(
+                    symbol.source.line,
+                    symbol.source.column,
+                    f"{symbol_family} {symbol.name} declared but not used",
                 )
