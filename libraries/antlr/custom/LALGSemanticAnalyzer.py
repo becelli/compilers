@@ -68,7 +68,11 @@ class TypeExtractor:
                 isinstance(symbol, VariableSymbol)
                 or isinstance(symbol, ProcedureParamSymbol)
             ):
-                raise TypeCheckError(f"Variable {variable_name} not declared")
+                self.listener.semanticError(
+                    identifier.symbol.line,  # type: ignore
+                    identifier.symbol.column,  # type: ignore
+                    f"Variable {variable_name} not declared",
+                )
             else:
                 symbol.is_used = True
                 return symbol.type
@@ -88,8 +92,10 @@ class TypeExtractor:
         elif factor.NOT():
             # If there is a NOT operator, the type must be boolean
             return "boolean"
-
-        raise TypeCheckError("Unknown factor type")
+        else:
+            self.listener.semanticError(
+                factor.start.line, factor.start.column, "Unknown factor type"
+            )
 
     def from_term(self, term: LALGParser.TermContext) -> str:
         factors: list = term.factor()  # type: ignore
@@ -107,12 +113,22 @@ class TypeExtractor:
                 ]  # The operation is every second child (1, 3, 5, ...)
                 if operation.getText() in ["*", "/", "div", "and"]:
                     if factor_type not in ["int", "real"]:
-                        raise TypeCheckError("Invalid type for arithmetic operation")
+                        self.listener.semanticError(
+                            operation.symbol.line,  # type: ignore
+                            operation.symbol.column,  # type: ignore
+                            "Invalid type for arithmetic operation",
+                        )
                 else:
-                    raise TypeCheckError("Unknown operation type")
+                    self.listener.semanticError(
+                        operation.symbol.line,  # type: ignore
+                        operation.symbol.column,  # type: ignore
+                        "Unknown operation type",
+                    )
 
         if len(operation_types) > 1:
-            raise TypeCheckError("Mixed types in term without coercion")
+            self.listener.semanticError(
+                term.start.line, term.start.column, "Mixed types in term without coercion"
+            )
 
         return operation_types.pop()
 
@@ -132,12 +148,24 @@ class TypeExtractor:
                 ]  # The operator is every second child (1, 3, 5, ...)
                 if operator.getText() in ["+", "-", "or"]:
                     if term_type not in ["int", "real"]:
-                        raise TypeCheckError("Invalid type for additive operation")
+                        self.listener.semanticError(
+                            operator.symbol.line,  # type: ignore
+                            operator.symbol.column,  # type: ignore
+                            "Invalid type for additive operation",
+                        )
                 else:
-                    raise TypeCheckError("Unknown operator type")
+                    self.listener.semanticError(
+                        operator.symbol.line,  # type: ignore
+                        operator.symbol.column,  # type: ignore
+                        "Unknown operator type",
+                    )
 
         if len(types_in_expression) > 1:
-            raise TypeCheckError("Mixed types in simple expression without coercion")
+            self.listener.semanticError(
+                simple_expression.start.line,
+                simple_expression.start.column,
+                "Mixed types in simple expression without coercion",
+            )
 
         return types_in_expression.pop()  # There should only be one type in the set
 
