@@ -1,19 +1,13 @@
 from __future__ import annotations
-from re import I
-from tkinter import LabelFrame
 from typing import Literal, Optional
 from libraries.antlr.LALGParser import LALGParser
 from libraries.antlr.LALGParserVisitor import LALGParserVisitor
 from libraries.antlr.custom.LALGErrorListener import LALGErrorListener
 from dataclasses import dataclass
-from abc import ABC, abstractmethod
+from abc import ABC
 
 
 VariableType = Literal["int", "boolean", "real", "unknown"]
-
-
-class TypeCheckError(Exception):
-    pass
 
 
 @dataclass
@@ -21,6 +15,7 @@ class Position:
     line: int
     column: int
 
+    @staticmethod
     def from_symbol(symbol):
         return Position(symbol.line, symbol.column)
 
@@ -29,6 +24,8 @@ class Position:
 class Symbol(ABC):
     name: str
     source: Position
+    is_used = False
+
 
 @dataclass
 class VariableSymbol(Symbol):
@@ -47,9 +44,6 @@ class ProcedureSymbol(Symbol):
     params: list[VariableSymbol]
     is_used: bool = False
 
-    def get_family():
-        return "Procedure"
-
 
 class Scope:
     def __init__(self, scope_name: str, enclosing_scope: Optional[Scope] = None):
@@ -64,10 +58,10 @@ class Scope:
         return self.symbols.get(name)
 
 
-@dataclass
 class TypeExtractor:
-    scope: Scope
-    listener: LALGErrorListener
+    def __init__(self, scope: Scope, listener: LALGErrorListener):
+        self.scope = scope
+        self.listener = listener
 
     def from_factor(self, factor: LALGParser.FactorContext) -> VariableType:
         # Check if the factor is a variable
@@ -108,6 +102,7 @@ class TypeExtractor:
             self.listener.semanticError(
                 factor.start.line, factor.start.column, "Unknown factor type"
             )
+            return "unknown"
 
     def from_term(self, term: LALGParser.TermContext) -> str:
         factors: list = term.factor()  # type: ignore
@@ -139,7 +134,9 @@ class TypeExtractor:
 
         if len(operation_types) > 1:
             self.listener.semanticError(
-                term.start.line, term.start.column, "Mixed types in term without coercion"
+                term.start.line,
+                term.start.column,
+                "Mixed types in term without coercion",
             )
 
         return operation_types.pop()
@@ -197,11 +194,14 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
 
     def enterScope(self, scope_name: str):
         scope = Scope(scope_name, self.current_scope)
+        self.type_extractor.scope = scope
         self.current_scope = scope
 
     def exitScope(self):
         if self.current_scope.enclosing_scope is not None:
+            self.type_extractor.scope = self.current_scope.enclosing_scope
             self.current_scope = self.current_scope.enclosing_scope
+
 
     def visitProgram(self, ctx: LALGParser.ProgramContext):
         self.visitChildren(ctx)
@@ -220,10 +220,10 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                 )
             else:
                 self.current_scope.define(
-                    VariableSymbol(variable_name, Position.from_symbol(identifier.symbol), var_type)
+                    VariableSymbol(
+                        variable_name, Position.from_symbol(identifier.symbol), var_type
+                    )
                 )
-
-        self.visitChildren(ctx)
 
     def visitProcedureDeclaration(self, ctx: LALGParser.ProcedureDeclarationContext):
         proc_name: str = ctx.IDENTIFIER().getText()  # type: ignore
@@ -238,14 +238,16 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
             self.enterScope(scope_name=proc_name)
             assert self.current_scope.enclosing_scope is not None
             self.visitChildren(ctx)
-            def param_condition(symbol): return isinstance(
-                symbol, ProcedureParamSymbol)
+
+            def param_condition(symbol):
+                return isinstance(symbol, ProcedureParamSymbol)
+
             collected_symbols = self.current_scope.symbols.values()
             identifier = ctx.IDENTIFIER()
             symbol = ProcedureSymbol(
                 proc_name,
                 Position.from_symbol(identifier.symbol),
-                list(filter(param_condition, collected_symbols))
+                list(filter(param_condition, collected_symbols)),
             )  # type: ignore
             self.current_scope.enclosing_scope.define(symbol)
             self.exitScope()
@@ -263,7 +265,9 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                     msg = f"Param {variable_name} is duplicated in the procedure {self.current_scope.scope_name}"
                     self.errorListener.semanticError(line, column, msg)
                 else:
-                    symbol = ProcedureParamSymbol(variable_name, Position.from_symbol(identifier.symbol), var_type)
+                    symbol = ProcedureParamSymbol(
+                        variable_name, Position.from_symbol(identifier.symbol), var_type
+                    )
                     self.current_scope.define(symbol)
 
     def visitProcedureCallStatement(
@@ -298,9 +302,9 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                 for expression in expressions_list
             ]
 
-            for i, (proc_params_type, expression_type) in enumerate(zip(
-                types_from_proc_params, types_from_expression_list
-            )):
+            for i, (proc_params_type, expression_type) in enumerate(
+                zip(types_from_proc_params, types_from_expression_list)
+            ):
                 if proc_params_type != expression_type:
                     self.errorListener.semanticError(
                         expressions_list[i].start.line,
@@ -318,13 +322,14 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
 
     def visitAssignmentStatement(self, ctx: LALGParser.AssignmentStatementContext):
         variable = ctx.variable()
+        assert variable is not None
         variable_name = variable.IDENTIFIER().getText()
         symbol = self.current_scope.resolve(variable_name)
         if symbol is None or not (
             isinstance(symbol, VariableSymbol)
             or isinstance(symbol, ProcedureParamSymbol)
         ):
-            identifier = ctx.IDENTIFIER()
+            identifier = ctx.IDENTIFIER()  # type: ignore
             line, column = identifier.symbol.line, identifier.symbol.column
             msg = f"Variable {variable_name} not declared"
             return self.errorListener.semanticError(line, column, msg)
@@ -377,7 +382,7 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
         self.visitChildren(ctx)
         for symbol in self.current_scope.symbols.values():
             if not symbol.is_used:
-                symbol_family: str # Deve ter uma forma melhor de fazer isso
+                symbol_family: str  # Deve ter uma forma melhor de fazer isso
                 if isinstance(symbol, VariableSymbol):
                     symbol_family = "Variable"
                 elif isinstance(symbol, ProcedureParamSymbol):
