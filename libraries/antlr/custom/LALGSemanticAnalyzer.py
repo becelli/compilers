@@ -66,43 +66,27 @@ class TypeExtractor:
     def from_factor(self, factor: LALGParser.FactorContext) -> VariableType:
         # Check if the factor is a variable
         if factor.variable():
-            # Retrieve and return the variable's type from the symbol table
             identifier = factor.variable().IDENTIFIER()  # type: ignore
             variable_name = identifier.getText()
             symbol = self.scope.resolve(variable_name)
-            if symbol is None or not (
-                isinstance(symbol, VariableSymbol)
-                or isinstance(symbol, ProcedureParamSymbol)
-            ):
-                self.listener.semanticError(
-                    identifier.symbol.line,  # type: ignore
-                    identifier.symbol.column,  # type: ignore
-                    f"Variable {variable_name} not declared",
-                )
-            else:
-                symbol.is_used = True
-                return symbol.type
-        # Check if the factor is a number
+            if symbol is None or not (isinstance(symbol, VariableSymbol) or isinstance(symbol, ProcedureParamSymbol)):  # fmt: skip
+                symbol, msg = identifier.symbol, f"Variable {variable_name} not declared"  # fmt: skip
+                self.listener.semanticError(symbol.line, symbol.column, msg)
+                return "unknown"
+            symbol.is_used = True
+            return symbol.type
         elif factor.number():
-            if factor.number().INT():  # type: ignore
-                return "int"
-            elif factor.number().REAL():  # type: ignore
-                return "real"
-        # Check if the factor is a literal
+            return "int" if factor.number().INT() else "real"  # type: ignore
         elif factor.literal():
             return "boolean"
-        # Check if the factor is a sub-expression
         elif factor.expression():
             return self.from_expression(factor.expression())  # type: ignore
-        # Check if the factor is a negated factor
         elif factor.NOT():
-            # If there is a NOT operator, the type must be boolean
             return "boolean"
-        else:
-            self.listener.semanticError(
-                factor.start.line, factor.start.column, "Unknown factor type"
-            )
-            return "unknown"
+        factor_start, msg = factor.start, "Unknown factor type"
+        assert factor_start is not None
+        self.listener.semanticError(factor_start.line, factor_start.column, msg)
+        return "unknown"
 
     def from_term(self, term: LALGParser.TermContext) -> str:
         factors: list = term.factor()  # type: ignore
@@ -201,7 +185,6 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
         if self.current_scope.enclosing_scope is not None:
             self.type_extractor.scope = self.current_scope.enclosing_scope
             self.current_scope = self.current_scope.enclosing_scope
-
 
     def visitProgram(self, ctx: LALGParser.ProgramContext):
         self.visitChildren(ctx)
