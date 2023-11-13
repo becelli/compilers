@@ -371,7 +371,7 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
             right_term = ctx.factor(1)
             left_type = self.type_extractor.from_factor(left_term)
             right_type = self.type_extractor.from_factor(right_term)
-            if left_type != "integer" or right_type != "integer":
+            if left_type != "int" or right_type != "int":
                 self.errorListener.semanticError(
                     ctx.INT_DIV().symbol.line,  # type: ignore
                     ctx.INT_DIV().symbol.column,  # type: ignore
