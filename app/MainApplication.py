@@ -38,7 +38,7 @@ class MainApplication(QMainWindow):
         self.navBarLayout.addWidget(self.openFileButton)
         self.navBarLayout.addWidget(self.saveFileButton)
         self.navBarLayout.addStretch()
-        self.doAnalysisButton = QPushButton("Compilar")
+        self.doAnalysisButton = QPushButton("Compile")
         self.doAnalysisButton.setStyleSheet("background-color: #BF4342")
         self.navBarLayout.addWidget(self.doAnalysisButton)
         self.navBarLayout.addStretch()

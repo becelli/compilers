@@ -51,12 +51,11 @@ assignmentStatement: variable ASSIGNMENT expression;
 
 procedureCallStatement: IDENTIFIER (LP expressionList RP)?;
 
-// IF expression THEN statement (ELSE statement)?;
-conditionalStatement:
-	IF expression statement (ELSE statement)?;
 
-// loopStatement: WHILE expression DO statement;
-loopStatement: WHILE expression statement;
+conditionalStatement:
+	IF LP expression RP statement (ELSE statement)?;
+
+loopStatement: WHILE LP expression RP statement;
 
 // Expressions
 

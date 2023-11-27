@@ -15,6 +15,7 @@ from app.entities.CompilerSteps import CompilerSteps
 from app.lexer.ColorMapper import ColorMapper
 from app.lexer.Colors import Colors
 from app.lexer.CustomLexer import CustomLexer
+from libraries.antlr.custom.LALGCodeGenerator import LALGCodeGenerator
 from libraries.antlr.custom.LALGCustomErrorStrategy import LALGCustomErrorStrategy
 from libraries.antlr.custom.LALGErrorListener import LALGErrorListener
 from libraries.antlr.LALGLexer import LALGLexer
@@ -154,6 +155,12 @@ class MainApplicationWidget(QWidget):
         
         semanticAnalyzer = LALGSemanticAnalyzer(listener)
         semanticAnalyzer.visit(tree)
+
+        if listener.hasErrors:
+            return
+
+        codeGenerator = LALGCodeGenerator()
+        codeGenerator.generate(tree)
         
 
     def toggleLexer(self):

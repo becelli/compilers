@@ -6,14 +6,18 @@ class LALGErrorListener(AntlrErrorListener):
     def __init__(self, errorOutput: QTextEdit) -> None:
         super().__init__()
         self.errorOutput = errorOutput
+        self.hasErrors = False
 
     def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+        self.hasErrors = True
         self.errorOutput.append(f"Syntax error on line {line}, column {column}: {msg}")
 
     def lexerError(self, line, column, msg):
+        self.hasErrors = True
         self.errorOutput.append(f"Lexer error on line {line}, column {column}: {msg}")
 
     def semanticError(self, line, column, msg):
+        self.hasErrors = True
         self.errorOutput.append(f"Semantic error on line {line}, column {column}: {msg}")
 
     def log(self, message):

@@ -1,4 +1,5 @@
 from __future__ import annotations
+from re import I
 from typing import Literal, Optional
 from libraries.antlr.LALGParser import LALGParser
 from libraries.antlr.LALGParserVisitor import LALGParserVisitor
@@ -336,6 +337,17 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                 ctx.IF().symbol.column,  # type: ignore
                 f"Expected boolean expression, got {expression_type}",
             )
+        
+        statement = ctx.statement()
+        if statement is None:
+            self.errorListener.semanticError(
+                ctx.IF().symbol.line,  # type: ignore
+                ctx.IF().symbol.column,  # type: ignore
+                f"Expected statement after conditional, got nothing",
+            )
+        
+        
+        
 
     def visitLoopStatement(self, ctx: LALGParser.LoopStatementContext):
         expression = ctx.expression()
