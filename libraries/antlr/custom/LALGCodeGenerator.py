@@ -3,7 +3,6 @@ from typing import Literal, Optional
 from libraries.antlr.LALGParser import LALGParser
 from libraries.antlr.LALGParserVisitor import LALGParserVisitor
 from libraries.antlr.custom.LALGErrorListener import LALGErrorListener
-from dataclasses import dataclass
 from abc import ABC
 from enum import Enum
 
@@ -99,7 +98,7 @@ class LALGCodeGenerator(LALGParserVisitor):
         if len(self.conditional_statements) > 1:
             self.code[self.conditional_statements[1]] = f"DSVS {len(self.code)}"
         self.conditional_statements = []
-        
+        vc
 
 
     def visitRelationalOperator(self, ctx: LALGParser.RelationalOperatorContext):

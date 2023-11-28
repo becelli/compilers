@@ -23,6 +23,7 @@ from libraries.antlr.LALGParser import LALGParser
 from libraries.state.AppState import AppState
 from libraries.antlr.custom.LALGSemanticAnalyzer import LALGSemanticAnalyzer
 
+
 class MainApplicationWidget(QWidget):
     def __init__(self, state: AppState):
         super().__init__()
@@ -52,11 +53,9 @@ class MainApplicationWidget(QWidget):
         self.textEditor.setMarginsForegroundColor(
             ColorMapper.getColor(Colors.lowContrastStyle)
         )
-        
+
         self.textEditor.setMarginWidth(1, "000")
         self.textEditor.setMarginWidth(2, "00")
-
-
 
         font = QFont("monospace", 16)
         self.textEditor.setFont(font)
@@ -152,7 +151,7 @@ class MainApplicationWidget(QWidget):
 
         if parser.getNumberOfSyntaxErrors() > 0:
             return
-        
+
         semanticAnalyzer = LALGSemanticAnalyzer(listener)
         semanticAnalyzer.visit(tree)
 
@@ -161,7 +160,6 @@ class MainApplicationWidget(QWidget):
 
         codeGenerator = LALGCodeGenerator()
         codeGenerator.generate(tree)
-        
 
     def toggleLexer(self):
         self.updateLabel(CompilerSteps.LEXER)

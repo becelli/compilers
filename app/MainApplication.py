@@ -60,9 +60,9 @@ class MainApplication(QMainWindow):
         self.openFileButton.clicked.connect(self.openFile)
         self.saveFileButton.clicked.connect(self.saveFile)
         self.doAnalysisButton.clicked.connect(self.mainWidget.compile)
-        self.toggleLexerButton.clicked.connect(self.mainWidget.toggleLexer)
-        self.toggleParserButton.clicked.connect(self.mainWidget.toggleSyntax)
-        self.toggleSemanticButton.clicked.connect(self.mainWidget.toggleSemantic)
+        # self.toggleLexerButton.clicked.connect(self.mainWidget.toggleLexer)
+        # self.toggleParserButton.clicked.connect(self.mainWidget.toggleSyntax)
+        # self.toggleSemanticButton.clicked.connect(self.mainWidget.toggleSemantic)
 
     def openFile(self):
         fileName, _ = QFileDialog.getOpenFileName(
