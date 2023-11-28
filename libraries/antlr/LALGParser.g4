@@ -68,9 +68,11 @@ relationalOperator:
 	| GREATER_THAN_OR_EQUAL
 	| GREATER_THAN;
 
-simpleExpression: termSignal? term ((SUM | SUB | OR) term)*;
+simpleExpression: term (simpleExpressionOperator term)*;
 
-termSignal: (SUM | SUB);
+simpleExpressionOperator: SUM | SUB | OR;
+
+// termSignal: SUM | SUB;
 
 
 term: factor ((MUL | DIV | INT_DIV | AND) factor)*;

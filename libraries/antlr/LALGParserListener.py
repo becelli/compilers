@@ -179,12 +179,12 @@ class LALGParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by LALGParser#termSignal.
-    def enterTermSignal(self, ctx:LALGParser.TermSignalContext):
+    # Enter a parse tree produced by LALGParser#simpleExpressionOperator.
+    def enterSimpleExpressionOperator(self, ctx:LALGParser.SimpleExpressionOperatorContext):
         pass
 
-    # Exit a parse tree produced by LALGParser#termSignal.
-    def exitTermSignal(self, ctx:LALGParser.TermSignalContext):
+    # Exit a parse tree produced by LALGParser#simpleExpressionOperator.
+    def exitSimpleExpressionOperator(self, ctx:LALGParser.SimpleExpressionOperatorContext):
         pass
 
 

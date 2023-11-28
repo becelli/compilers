@@ -104,8 +104,8 @@ class LALGParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by LALGParser#termSignal.
-    def visitTermSignal(self, ctx:LALGParser.TermSignalContext):
+    # Visit a parse tree produced by LALGParser#simpleExpressionOperator.
+    def visitSimpleExpressionOperator(self, ctx:LALGParser.SimpleExpressionOperatorContext):
         return self.visitChildren(ctx)
 
 

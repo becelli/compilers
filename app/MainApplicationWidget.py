@@ -150,8 +150,11 @@ class MainApplicationWidget(QWidget):
 
         tree = parser.program()
 
+
         if parser.getNumberOfSyntaxErrors() > 0:
             return
+        
+        print(tree.toStringTree(recog=parser))
 
         semanticAnalyzer = LALGSemanticAnalyzer(listener)
         semanticAnalyzer.visit(tree)
