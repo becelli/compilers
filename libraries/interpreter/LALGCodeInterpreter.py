@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Tuple
 
 
 class LALGCodeInterpreter:
@@ -8,24 +8,23 @@ class LALGCodeInterpreter:
     See the documentation for more information.
     @see https://www.ic.unicamp.br/~tomasz/ilp/ilp.pdf
     """
-    
 
     def __init__(self, code: list[str]):
         """Initializes the MEPA interpreter."""
         self.code = code
         self.instruction_pointer = 0
-        self.stack: list[Optional[int]] = []
+        self.stack: list[int] = []
 
     def __post_init__(self):
         """Initializes the MEPA interpreter."""
         self.instruction_pointer = 0
         self.stack = []
 
-    def fetch_instruction(self) -> Tuple[str, Optional[int]]:
+    def fetch_instruction(self) -> Tuple[str, int]:
         """Fetches the current instruction and its operand (if any)."""
         parts = self.code[self.instruction_pointer].split()
         instruction = parts[0]
-        operand = int(parts[1]) if len(parts) > 1 else None
+        operand = int(parts[1]) if len(parts) > 1 else 0
         return instruction, operand
 
     def run(self):
@@ -37,7 +36,7 @@ class LALGCodeInterpreter:
                 break
             self.instruction_pointer += 1
 
-    def process_instruction(self, instruction: str, operand: Optional[int]) -> bool:
+    def process_instruction(self, instruction: str, operand: int) -> bool:
         """Processes a single instruction."""
         operations = {
             "INPP": self.init_program,
@@ -46,7 +45,7 @@ class LALGCodeInterpreter:
             "CRVL": self.load_value,
             "ARMZ": self.store_value,
             "SOMA": self.add_values,
-            "SUB": self.subtract_values,
+            "SUBT": self.subtract_values,
             "MULT": self.multiply_values,
             "DIVI": self.divide_values,
             "MODI": self.modulus_operation,
@@ -73,213 +72,204 @@ class LALGCodeInterpreter:
         }
 
         operation = operations.get(instruction)
-        if operation is not None:
-            return operation(operand)
+        if operation is None:
+            self.abort(f"Unknown command: {instruction}")
+            return False
 
-        self.abort(f"Unknown command: {instruction}")
-        return False
+        return operation(operand)
 
-    def init_program(self, operand: Optional[int]) -> bool:
+    def init_program(self, operand: int) -> bool:
         """Initializes the program."""
         self.instruction_pointer = 0
         self.stack = []
         return True
 
-    def allocate_memory(self, operand: Optional[int]) -> bool:
-        """Allocates memory."""
-        assert operand is not None
-        for _ in range(operand):
-            self.stack.append(None)
-        return True
-
-    def load_constant(self, operand: Optional[int]) -> bool:
+    def load_constant(self, operand: int) -> bool:
         """Loads a constant."""
         self.stack.append(operand)
         return True
 
-    def load_value(self, operand: Optional[int]) -> bool:
+    def load_value(self, operand: int) -> bool:
         """Loads a value from the stack."""
-        assert operand is not None
+        # TODO: Check if should start backwards
         loaded_value = self.stack[operand]
         self.stack.append(loaded_value)
         return True
 
-    def store_value(self, operand: Optional[int]) -> bool:
+    def store_value(self, operand: int) -> bool:
         """Stores a value in memory."""
-        assert operand is not None
         self.stack[operand] = self.stack.pop()
         return True
 
-    def add_values(self, operand: Optional[int]) -> bool:
+    def add_values(self, operand: int) -> bool:
         """Adds values."""
         b = self.stack.pop()
         a = self.stack.pop()
-        assert a is not None and b is not None
         self.stack.append(a + b)
         return True
 
-    def subtract_values(self, operand: Optional[int]) -> bool:
+    def subtract_values(self, operand: int) -> bool:
         """Subtracts values."""
         b = self.stack.pop()
         a = self.stack.pop()
-        assert a is not None and b is not None
         self.stack.append(a - b)
         return True
 
-    def multiply_values(self, operand: Optional[int]) -> bool:
+    def multiply_values(self, operand: int) -> bool:
         """Multiplies values."""
         b = self.stack.pop()
         a = self.stack.pop()
-        assert a is not None and b is not None
         self.stack.append(a * b)
         return True
 
-    def divide_values(self, operand: Optional[int]) -> bool:
+    def divide_values(self, operand: int) -> bool:
         """Divides values."""
         b = self.stack.pop()
         a = self.stack.pop()
-        assert a is not None and b is not None
         if b == 0:
             self.abort(f"Division by zero: {a} / {b}")
             return False
         self.stack.append(a // b)
         return True
 
-    def modulus_operation(self, operand: Optional[int]) -> bool:
+    def modulus_operation(self, operand: int) -> bool:
         """Performs a modulus operation."""
         b = self.stack.pop()
         a = self.stack.pop()
-        assert a is not None and b is not None
         self.stack.append(a % b)
         return True
 
-    def invert_value(self, operand: Optional[int]) -> bool:
+    def invert_value(self, operand: int) -> bool:
         """Inverts a value."""
         value = self.stack.pop()
         assert value is not None
         self.stack.append(-value)
         return True
 
-    def logical_and(self, operand: Optional[int]) -> bool:
+    def logical_and(self, operand: int) -> bool:
         """Performs a logical and."""
         b = self.stack.pop()
         a = self.stack.pop()
         self.stack.append(a and b)
         return True
 
-    def logical_or(self, operand: Optional[int]) -> bool:
+    def logical_or(self, operand: int) -> bool:
         """Performs a logical or."""
         b = self.stack.pop()
         a = self.stack.pop()
         self.stack.append(a or b)
         return True
 
-    def logical_not(self, operand: Optional[int]) -> bool:
+    def logical_not(self, operand: int) -> bool:
         """Performs a logical not."""
-        self.stack.append(not self.stack.pop())
+        # TODO: Check if this is correct. If not, return to not self.stack.pop()
+        value = self.stack.pop()
+        assert value is not None
+        self.stack.append(1 - value)
         return True
 
-    def compare_less(self, operand: Optional[int]) -> bool:
+    def compare_less(self, operand: int) -> bool:
         """Compares values."""
         b = self.stack.pop()
         a = self.stack.pop()
-        assert a is not None and b is not None
         self.stack.append(a < b)
         return True
 
-    def compare_greater(self, operand: Optional[int]) -> bool:
+    def compare_greater(self, operand: int) -> bool:
         """Compares values."""
         b = self.stack.pop()
         a = self.stack.pop()
-        assert a is not None and b is not None
         self.stack.append(a > b)
         return True
 
-    def compare_equal(self, operand: Optional[int]) -> bool:
+    def compare_equal(self, operand: int) -> bool:
         """Compares values."""
         b = self.stack.pop()
         a = self.stack.pop()
         self.stack.append(a == b)
         return True
 
-    def compare_not_equal(self, operand: Optional[int]) -> bool:
+    def compare_not_equal(self, operand: int) -> bool:
         """Compares values."""
         b = self.stack.pop()
         a = self.stack.pop()
         self.stack.append(a != b)
         return True
 
-    def compare_less_equal(self, operand: Optional[int]) -> bool:
+    def compare_less_equal(self, operand: int) -> bool:
         """Compares values."""
         b = self.stack.pop()
         a = self.stack.pop()
-        assert a is not None and b is not None
         self.stack.append(a <= b)
         return True
 
-    def compare_greater_equal(self, operand: Optional[int]) -> bool:
+    def compare_greater_equal(self, operand: int) -> bool:
         """Compares values."""
         b = self.stack.pop()
         a = self.stack.pop()
-        assert a is not None and b is not None
         self.stack.append(a >= b)
         return True
 
-    def unconditional_jump(self, operand: Optional[int]) -> bool:
+    def unconditional_jump(self, operand: int) -> bool:
         """Performs an unconditional jump."""
-        assert operand is not None
-        self.instruction_pointer = operand
+        # TODO: Check if should really be -1
+        self.instruction_pointer = operand - 1
         return True
 
-    def conditional_jump(self, operand: Optional[int]) -> bool:
+    def conditional_jump(self, operand: int) -> bool:
         """Performs a conditional jump."""
-        assert operand is not None
         if not self.stack.pop():
-            self.instruction_pointer = operand
+            self.instruction_pointer = operand - 1
         return True
 
-    def read_integer(self, operand: Optional[int]) -> bool:
+    def read_integer(self, operand: int) -> bool:
         """Reads an integer."""
-        self.stack.append(int(input()))
+        self.stack.append(int(input("Enter an integer: ")))
         return True
 
-    def read_character(self, operand: Optional[int]) -> bool:
+    def read_character(self, operand: int) -> bool:
         """Reads a character."""
-        self.stack.append(ord(input()))
+        self.stack.append(ord(input("Enter a character: ")[0]))
         return True
 
-    def print_integer(self, operand: Optional[int]) -> bool:
+    def print_integer(self, operand: int) -> bool:
         """Prints an integer."""
         print(self.stack.pop())
         return True
 
-    def print_character(self, operand: Optional[int]) -> bool:
+    def print_character(self, operand: int) -> bool:
         """Prints a character."""
         character_ord = self.stack.pop()
         assert character_ord is not None
         print(chr(character_ord), end="")
         return True
 
-    def print_newline(self, operand: Optional[int]) -> bool:
+    def print_newline(self, operand: int) -> bool:
         """Prints a newline."""
-        print()
+        # TODO: Check if this is correct
+        print(self.stack.pop())
         return True
 
-    def deallocate_memory(self, operand: Optional[int]) -> bool:
+    def allocate_memory(self, operand: int) -> bool:
+        """Allocates memory."""
+        for _ in range(operand):
+            self.stack.append(0)
+        return True
+
+    def deallocate_memory(self, operand: int) -> bool:
         """Deallocates memory."""
-        assert operand is not None
         for _ in range(operand):
             self.stack.pop()
         return True
 
-    def no_operation(self, operand: Optional[int]) -> bool:
+    def no_operation(self, operand: int) -> bool:
         """Does nothing."""
         return True
 
-    def end_program(self, operand: Optional[int]) -> bool:
+    def end_program(self, operand: int) -> bool:
         """Ends the program."""
         return False
-    
+
     def abort(self, message: str) -> bool:
         """Aborts the program."""
         print(f"Error: {message}. Aborting.")
