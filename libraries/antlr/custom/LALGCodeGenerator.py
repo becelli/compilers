@@ -35,11 +35,13 @@ class LALGCodeGenerator(LALGParserVisitor):
         self.data_counter = 0
         self.conditional_statements = []
 
-    def generate(self, tree: LALGParser.ProgramContext):
+    def generate(self, tree: LALGParser.ProgramContext) -> list[str]:
         self.visit(tree)
         # save the code to a file
         with open("code.txt", "w") as f:
             f.write("\n".join(self.code))
+
+        return self.code
 
     def visitProgram(self, ctx: LALGParser.ProgramContext):
         self.code.append("INPP")
@@ -98,8 +100,6 @@ class LALGCodeGenerator(LALGParserVisitor):
         if len(self.conditional_statements) > 1:
             self.code[self.conditional_statements[1]] = f"DSVS {len(self.code)}"
         self.conditional_statements = []
-        vc
-
 
     def visitRelationalOperator(self, ctx: LALGParser.RelationalOperatorContext):
         if ctx.EQUAL():
@@ -127,7 +127,7 @@ class LALGCodeGenerator(LALGParserVisitor):
                 self.code.append("DIVI")
             elif ctx.DIV(i):
                 self.code.append("DIVI")
-        
+
         return super().visitTerm(ctx)
 
     def visitFactor(self, ctx: LALGParser.FactorContext):
@@ -142,8 +142,6 @@ class LALGCodeGenerator(LALGParserVisitor):
             self.visit(ctx.literal())
         elif ctx.number():
             self.visit(ctx.number())
-
-
 
     def visitSimpleExpression(self, ctx: LALGParser.SimpleExpressionContext):
         terms = ctx.term()

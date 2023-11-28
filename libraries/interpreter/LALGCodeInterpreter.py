@@ -1,7 +1,7 @@
 from typing import Optional, Tuple
 
 
-class MEPAInterpreter:
+class LALGCodeInterpreter:
     """A MEPA interpreter.
 
     The MEPA interpreter is a stack-based interpreter for the Linguagem Pascal Simplificada.
@@ -32,9 +32,8 @@ class MEPAInterpreter:
         """Executes the MEPA code."""
         while True:
             instruction, operand = self.fetch_instruction()
-
             has_next_instruction = self.process_instruction(instruction, operand)
-            if has_next_instruction:
+            if not has_next_instruction:
                 break
             self.instruction_pointer += 1
 
@@ -77,7 +76,7 @@ class MEPAInterpreter:
         if operation is not None:
             return operation(operand)
 
-        print(f"Unknown command: {instruction}. Aborting.")
+        self.abort(f"Unknown command: {instruction}")
         return False
 
     def init_program(self, operand: Optional[int]) -> bool:
@@ -140,6 +139,9 @@ class MEPAInterpreter:
         b = self.stack.pop()
         a = self.stack.pop()
         assert a is not None and b is not None
+        if b == 0:
+            self.abort(f"Division by zero: {a} / {b}")
+            return False
         self.stack.append(a // b)
         return True
 
@@ -276,4 +278,10 @@ class MEPAInterpreter:
 
     def end_program(self, operand: Optional[int]) -> bool:
         """Ends the program."""
+        return False
+    
+    def abort(self, message: str) -> bool:
+        """Aborts the program."""
+        print(f"Error: {message}. Aborting.")
+        print(f"Stack: {self.stack}")
         return False

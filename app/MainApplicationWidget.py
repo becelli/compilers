@@ -20,6 +20,7 @@ from libraries.antlr.custom.LALGCustomErrorStrategy import LALGCustomErrorStrate
 from libraries.antlr.custom.LALGErrorListener import LALGErrorListener
 from libraries.antlr.LALGLexer import LALGLexer
 from libraries.antlr.LALGParser import LALGParser
+from libraries.interpreter.LALGCodeInterpreter import LALGCodeInterpreter
 from libraries.state.AppState import AppState
 from libraries.antlr.custom.LALGSemanticAnalyzer import LALGSemanticAnalyzer
 
@@ -137,29 +138,41 @@ class MainApplicationWidget(QWidget):
                 listener.lexerError(token.line, token.column, message)
 
     def syntaxAnalysis(self, listener: LALGErrorListener):
-        lexer = LALGLexer(InputStream(self.code))
-        tokens = CommonTokenStream(lexer)
-        parser = LALGParser(tokens)
+        # lexer = LALGLexer(InputStream(self.code))
+        # tokens = CommonTokenStream(lexer)
+        # parser = LALGParser(tokens)
 
-        lexer.removeErrorListeners()
-        parser.removeErrorListeners()
-        lexer.addErrorListener(listener)
-        parser.addErrorListener(listener)
-        parser._errHandler = LALGCustomErrorStrategy()
+        # lexer.removeErrorListeners()
+        # parser.removeErrorListeners()
+        # lexer.addErrorListener(listener)
+        # parser.addErrorListener(listener)
+        # parser._errHandler = LALGCustomErrorStrategy()
 
-        tree = parser.program()
+        # tree = parser.program()
 
-        if parser.getNumberOfSyntaxErrors() > 0:
-            return
+        # if parser.getNumberOfSyntaxErrors() > 0:
+        #     return
 
-        semanticAnalyzer = LALGSemanticAnalyzer(listener)
-        semanticAnalyzer.visit(tree)
+        # semanticAnalyzer = LALGSemanticAnalyzer(listener)
+        # semanticAnalyzer.visit(tree)
 
-        if listener.hasErrors:
-            return
+        # if listener.hasErrors:
+        #     return
 
-        codeGenerator = LALGCodeGenerator()
-        codeGenerator.generate(tree)
+        # codeGenerator = LALGCodeGenerator()
+        # code = codeGenerator.generate(tree)
+
+        codes = [1, 2, 3]
+        # with open("tests/interpreter/1.pas") as f:
+        #     code = f.read().splitlines()
+        #     interpreter = LALGCodeInterpreter(code)
+        #     interpreter.run()
+        for code in codes:
+            print('code', code)
+            with open(f"tests/interpreter/exemplo_{code}_code.txt") as f:
+                r_code = f.read().splitlines()
+                interpreter = LALGCodeInterpreter(r_code)
+                interpreter.run()
 
     def toggleLexer(self):
         self.updateLabel(CompilerSteps.LEXER)
