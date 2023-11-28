@@ -374,20 +374,21 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                 )
 
     def visitBlock(self, ctx: LALGParser.BlockContext):
-        self.visitChildren(ctx)
-        for symbol in self.current_scope.symbols.values():
-            if not symbol.is_used:
-                symbol_family: str  # Deve ter uma forma melhor de fazer isso
-                if isinstance(symbol, VariableSymbol):
-                    symbol_family = "Variable"
-                elif isinstance(symbol, ProcedureParamSymbol):
-                    symbol_family = "Parameter"
-                elif isinstance(symbol, ProcedureSymbol):
-                    symbol_family = "Procedure"
-                else:
-                    symbol_family = "Unknown"
-                self.errorListener.semanticError(
-                    symbol.source.line,
-                    symbol.source.column,
-                    f"{symbol_family} {symbol.name} declared but not used",
-                )
+        pass
+        # self.visitChildren(ctx)
+        # for symbol in self.current_scope.symbols.values():
+        #     if not symbol.is_used:
+        #         symbol_family: str  # Deve ter uma forma melhor de fazer isso
+        #         if isinstance(symbol, VariableSymbol):
+        #             symbol_family = "Variable"
+        #         elif isinstance(symbol, ProcedureParamSymbol):
+        #             symbol_family = "Parameter"
+        #         elif isinstance(symbol, ProcedureSymbol):
+        #             symbol_family = "Procedure"
+        #         else:
+        #             symbol_family = "Unknown"
+        #         self.errorListener.semanticError(
+        #             symbol.source.line,
+        #             symbol.source.column,
+        #             f"{symbol_family} {symbol.name} declared but not used",
+        #         )

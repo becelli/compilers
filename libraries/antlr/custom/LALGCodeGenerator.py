@@ -33,7 +33,6 @@ class LALGCodeGenerator(LALGParserVisitor):
         self.code = []
         self.variables = {}
         self.data_counter = 0
-        self.conditional_statements = []
 
     def generate(self, tree: LALGParser.ProgramContext) -> list[str]:
         self.visit(tree)
@@ -56,14 +55,14 @@ class LALGCodeGenerator(LALGParserVisitor):
             name: str = identifier.getText()
             address = self.data_counter
             self.data_counter += 1
-            variable = Integer if var_type == "int" else Boolean
-            self.variables[name] = variable(name, address)
+            Constructor = Integer if var_type == "int" else Boolean
+            self.variables[name] = Constructor(name, address)
             self.code.append(f"AMEM 1")
 
         self.visitChildren(ctx)
 
     def visitAssignmentStatement(self, ctx: LALGParser.AssignmentStatementContext):
-        name = ctx.variable().IDENTIFIER().getText()
+        name = ctx.variable().IDENTIFIER().getText()  # type: ignore
         variable = self.variables[name]
         self.visit(ctx.expression())
         self.code.append(f"ARMZ {variable.address}")
@@ -71,35 +70,54 @@ class LALGCodeGenerator(LALGParserVisitor):
     def visitIoProcedureCallStatement(
         self, ctx: LALGParser.IoProcedureCallStatementContext
     ):
-        if ctx.READ_PROCEDURE():
-            name = ctx.variable().IDENTIFIER().getText()
-            variable = self.variables[name]
-            self.code.append(f"LEIT")
-            self.code.append(f"ARMZ {variable.address}")
-        elif ctx.WRITE_PROCEDURE():
-            self.visit(ctx.variable())
-            self.code.append(f"IMPR")
+        variables = name = ctx.variable()
+        assert isinstance(variables, list)
+        for variable in variables:
+            name = variable.IDENTIFIER().getText()
+            var = self.variables[name]
+            if ctx.READ_PROCEDURE():
+                self.code.append(f"LEIT")
+                self.code.append(f"ARMZ {var.address}")
+            elif ctx.WRITE_PROCEDURE():
+                self.code.append(f"CRVL {var.address}")
+                self.code.append(f"IMPR")
 
     def visitVariable(self, ctx: LALGParser.VariableContext):
-        name = ctx.IDENTIFIER().getText()
+        name = ctx.IDENTIFIER().getText()  # type: ignore
         variable = self.variables[name]
         self.code.append(f"CRVL {variable.address}")
 
     def visitConditionalStatement(self, ctx: LALGParser.ConditionalStatementContext):
+        # conditionalStatement: IF LP expression RP statement (ELSE statement)?;
+        # DSVF (if false) and DSVS (always) instructions
         self.visit(ctx.expression())
         self.code.append("DSVF")
-        self.conditional_statements.append(len(self.code) - 1)
+        l1 = len(self.code) - 1
         self.visit(ctx.statement(0))
-        self.code.append("DSVS")
-        self.code.append("NADA")
         if ctx.ELSE():
-            self.conditional_statements.append(len(self.code) - 1)
+            self.code.append("DSVS")
+            l2 = len(self.code) - 1
+            self.code[l1] += f" {l2 + 1}"
             self.visit(ctx.statement(1))
-            self.code.append("NADA")
-        self.code[self.conditional_statements[0]] = f"DSVF {len(self.code)}"
-        if len(self.conditional_statements) > 1:
-            self.code[self.conditional_statements[1]] = f"DSVS {len(self.code)}"
-        self.conditional_statements = []
+            self.code[l2] += f" {len(self.code)}"
+        else:
+            self.code[l1] += f" {len(self.code)}"
+
+        return self.code
+    
+    def visitLoopStatement(self, ctx: LALGParser.LoopStatementContext):
+        # loopStatement: WHILE LP expression RP statement;
+        # DSVF (if false) and DSVS (always) instructions
+
+        l1 = len(self.code)
+        self.visit(ctx.expression())
+        self.code.append("DSVF")
+        l2 = len(self.code) - 1
+        self.visit(ctx.statement())
+        self.code.append(f"DSVS {l1}")
+        self.code[l2] += f" {len(self.code)}"
+        return self.code
+
 
     def visitRelationalOperator(self, ctx: LALGParser.RelationalOperatorContext):
         if ctx.EQUAL():
@@ -115,8 +133,17 @@ class LALGCodeGenerator(LALGParserVisitor):
         elif ctx.LESS_THAN_OR_EQUAL():
             self.code.append("CMEG")
 
+    def visitExpression(self, ctx: LALGParser.ExpressionContext):
+        simple_expressions = ctx.simpleExpression()
+        assert isinstance(simple_expressions, list)
+        self.visit(simple_expressions[0])
+        if len(simple_expressions) > 1:
+            self.visit(simple_expressions[1])
+            self.visit(ctx.relationalOperator())
+
     def visitTerm(self, ctx: LALGParser.TermContext):
         factors = ctx.factor()
+        assert isinstance(factors, list)
         for i in range(len(factors) - 1):
             self.visit(factors[i + 1])
             if ctx.MUL(i):
@@ -144,8 +171,14 @@ class LALGCodeGenerator(LALGParserVisitor):
             self.visit(ctx.number())
 
     def visitSimpleExpression(self, ctx: LALGParser.SimpleExpressionContext):
+        term_signal = ctx.termSignal()
+
         terms = ctx.term()
+        assert isinstance(terms, list)
         self.visit(terms[0])
+        if term_signal:
+            self.visit(term_signal)
+
         for i in range(len(terms) - 1):
             self.visit(terms[i + 1])
             if ctx.SUM(i):
@@ -155,8 +188,15 @@ class LALGCodeGenerator(LALGParserVisitor):
             elif ctx.OR(i):
                 self.code.append("DISJ")
 
+    def visitTermSignal(self, ctx: LALGParser.TermSignalContext):
+        if ctx.SUB():
+            self.code.append("INVR")
+
     def visitLiteral(self, ctx: LALGParser.LiteralContext):
         if ctx.LITERAL_FALSE():
             self.code.append("CRCT 0")
         elif ctx.LITERAL_TRUE():
             self.code.append("CRCT 1")
+
+    def visitNumber(self, ctx: LALGParser.NumberContext):
+        self.code.append(f"CRCT {ctx.getText()}")

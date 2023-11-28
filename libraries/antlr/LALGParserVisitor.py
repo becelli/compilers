@@ -104,6 +104,11 @@ class LALGParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by LALGParser#termSignal.
+    def visitTermSignal(self, ctx:LALGParser.TermSignalContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by LALGParser#term.
     def visitTerm(self, ctx:LALGParser.TermContext):
         return self.visitChildren(ctx)

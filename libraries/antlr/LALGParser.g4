@@ -52,8 +52,7 @@ assignmentStatement: variable ASSIGNMENT expression;
 procedureCallStatement: IDENTIFIER (LP expressionList RP)?;
 
 
-conditionalStatement:
-	IF LP expression RP statement (ELSE statement)?;
+conditionalStatement: IF LP expression RP statement (ELSE statement)?;
 
 loopStatement: WHILE LP expression RP statement;
 
@@ -69,7 +68,10 @@ relationalOperator:
 	| GREATER_THAN_OR_EQUAL
 	| GREATER_THAN;
 
-simpleExpression: (SUM | SUB)? term ((SUM | SUB | OR) term)*;
+simpleExpression: termSignal? term ((SUM | SUB | OR) term)*;
+
+termSignal: (SUM | SUB);
+
 
 term: factor ((MUL | DIV | INT_DIV | AND) factor)*;
 
@@ -88,5 +90,5 @@ number: INT | REAL;
 
 literal: LITERAL_TRUE | LITERAL_FALSE;
 
-ioProcedureCallStatement: (READ_PROCEDURE | WRITE_PROCEDURE) LP variable RP;
+ioProcedureCallStatement: (READ_PROCEDURE | WRITE_PROCEDURE) LP variable (COMMA variable)* RP;
 
