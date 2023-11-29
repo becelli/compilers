@@ -15,12 +15,15 @@ from app.entities.CompilerSteps import CompilerSteps
 from app.lexer.ColorMapper import ColorMapper
 from app.lexer.Colors import Colors
 from app.lexer.CustomLexer import CustomLexer
+from libraries.antlr.custom.LALGCodeGenerator import LALGCodeGenerator
 from libraries.antlr.custom.LALGCustomErrorStrategy import LALGCustomErrorStrategy
 from libraries.antlr.custom.LALGErrorListener import LALGErrorListener
 from libraries.antlr.LALGLexer import LALGLexer
 from libraries.antlr.LALGParser import LALGParser
+from libraries.interpreter.LALGCodeInterpreter import LALGCodeInterpreter
 from libraries.state.AppState import AppState
 from libraries.antlr.custom.LALGSemanticAnalyzer import LALGSemanticAnalyzer
+
 
 class MainApplicationWidget(QWidget):
     def __init__(self, state: AppState):
@@ -31,6 +34,7 @@ class MainApplicationWidget(QWidget):
         self.setupTableLexer()
         self.setupOutputs()
         self.updateLabel()
+        self.is_running = False
 
     def setupMainLayout(self):
         self.editorLayout = QVBoxLayout()
@@ -51,11 +55,9 @@ class MainApplicationWidget(QWidget):
         self.textEditor.setMarginsForegroundColor(
             ColorMapper.getColor(Colors.lowContrastStyle)
         )
-        
+
         self.textEditor.setMarginWidth(1, "000")
         self.textEditor.setMarginWidth(2, "00")
-
-
 
         font = QFont("monospace", 16)
         self.textEditor.setFont(font)
@@ -110,6 +112,8 @@ class MainApplicationWidget(QWidget):
                 self.table.setItem(row, col, QTableWidgetItem(str(value)))
 
     def compile(self):
+        if self.is_running:
+            return
         self.outputError.clear()
         listener = LALGErrorListener(self.outputError)
         self.lexicalAnalysis(listener)
@@ -151,10 +155,19 @@ class MainApplicationWidget(QWidget):
 
         if parser.getNumberOfSyntaxErrors() > 0:
             return
-        
+
         semanticAnalyzer = LALGSemanticAnalyzer(listener)
         semanticAnalyzer.visit(tree)
-        
+
+        if listener.hasErrors:
+            return
+
+        self.is_running = True
+        codeGenerator = LALGCodeGenerator()
+        code = codeGenerator.generate(tree)
+        interpreter = LALGCodeInterpreter(code)
+        interpreter.run()
+        self.is_running = False
 
     def toggleLexer(self):
         self.updateLabel(CompilerSteps.LEXER)

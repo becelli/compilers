@@ -94,23 +94,43 @@ class LALGParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by LALGParser#additiveExpression.
+    def visitAdditiveExpression(self, ctx:LALGParser.AdditiveExpressionContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by LALGParser#multiplicativeExpression.
+    def visitMultiplicativeExpression(self, ctx:LALGParser.MultiplicativeExpressionContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by LALGParser#unaryExpression.
+    def visitUnaryExpression(self, ctx:LALGParser.UnaryExpressionContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by LALGParser#primaryExpression.
+    def visitPrimaryExpression(self, ctx:LALGParser.PrimaryExpressionContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by LALGParser#additiveOperator.
+    def visitAdditiveOperator(self, ctx:LALGParser.AdditiveOperatorContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by LALGParser#multiplicativeOperator.
+    def visitMultiplicativeOperator(self, ctx:LALGParser.MultiplicativeOperatorContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by LALGParser#unaryOperator.
+    def visitUnaryOperator(self, ctx:LALGParser.UnaryOperatorContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by LALGParser#relationalOperator.
     def visitRelationalOperator(self, ctx:LALGParser.RelationalOperatorContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by LALGParser#simpleExpression.
-    def visitSimpleExpression(self, ctx:LALGParser.SimpleExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by LALGParser#term.
-    def visitTerm(self, ctx:LALGParser.TermContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by LALGParser#factor.
-    def visitFactor(self, ctx:LALGParser.FactorContext):
         return self.visitChildren(ctx)
 
 

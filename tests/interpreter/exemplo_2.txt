@@ -1,0 +1,21 @@
+program correto;
+int a, b;
+
+begin
+	a:= 5;
+	read(b);
+
+	if(b > 0)
+		begin
+			write(b);
+			write(b);
+			write(b)
+		end;
+
+	while(a > 0)
+		begin 
+			b:=b+1;
+			write(b);
+			a:=a-1
+		end
+end.

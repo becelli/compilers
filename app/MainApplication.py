@@ -38,7 +38,7 @@ class MainApplication(QMainWindow):
         self.navBarLayout.addWidget(self.openFileButton)
         self.navBarLayout.addWidget(self.saveFileButton)
         self.navBarLayout.addStretch()
-        self.doAnalysisButton = QPushButton("Compilar")
+        self.doAnalysisButton = QPushButton("Compile")
         self.doAnalysisButton.setStyleSheet("background-color: #BF4342")
         self.navBarLayout.addWidget(self.doAnalysisButton)
         self.navBarLayout.addStretch()
@@ -60,9 +60,9 @@ class MainApplication(QMainWindow):
         self.openFileButton.clicked.connect(self.openFile)
         self.saveFileButton.clicked.connect(self.saveFile)
         self.doAnalysisButton.clicked.connect(self.mainWidget.compile)
-        self.toggleLexerButton.clicked.connect(self.mainWidget.toggleLexer)
-        self.toggleParserButton.clicked.connect(self.mainWidget.toggleSyntax)
-        self.toggleSemanticButton.clicked.connect(self.mainWidget.toggleSemantic)
+        # self.toggleLexerButton.clicked.connect(self.mainWidget.toggleLexer)
+        # self.toggleParserButton.clicked.connect(self.mainWidget.toggleSyntax)
+        # self.toggleSemanticButton.clicked.connect(self.mainWidget.toggleSemantic)
 
     def openFile(self):
         fileName, _ = QFileDialog.getOpenFileName(

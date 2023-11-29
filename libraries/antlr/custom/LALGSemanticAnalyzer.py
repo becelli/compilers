@@ -1,4 +1,6 @@
 from __future__ import annotations
+from re import I
+import re
 from typing import Literal, Optional
 from libraries.antlr.LALGParser import LALGParser
 from libraries.antlr.LALGParserVisitor import LALGParserVisitor
@@ -51,10 +53,10 @@ class Scope:
         self.enclosing_scope: Optional[Scope] = enclosing_scope
         self.symbols: dict[str, Symbol] = {}
 
-    def define(self, symbol: Symbol):
+    def set(self, symbol: Symbol):
         self.symbols[symbol.name] = symbol
 
-    def resolve(self, name: str) -> Optional[Symbol]:
+    def get(self, name: str) -> Optional[Symbol]:
         return self.symbols.get(name)
 
 
@@ -63,111 +65,147 @@ class TypeExtractor:
         self.scope = scope
         self.listener = listener
 
-    def from_factor(self, factor: LALGParser.FactorContext) -> VariableType:
-        # Check if the factor is a variable
-        if factor.variable():
-            identifier = factor.variable().IDENTIFIER()  # type: ignore
-            variable_name = identifier.getText()
-            symbol = self.scope.resolve(variable_name)
-            if symbol is None or not (isinstance(symbol, VariableSymbol) or isinstance(symbol, ProcedureParamSymbol)):  # fmt: skip
-                symbol, msg = identifier.symbol, f"Variable {variable_name} not declared"  # fmt: skip
-                self.listener.semanticError(symbol.line, symbol.column, msg)
-                return "unknown"
-            symbol.is_used = True
-            return symbol.type
-        elif factor.number():
-            return "int" if factor.number().INT() else "real"  # type: ignore
-        elif factor.literal():
-            return "boolean"
-        elif factor.expression():
-            return self.from_expression(factor.expression())  # type: ignore
-        elif factor.NOT():
-            return "boolean"
-        factor_start, msg = factor.start, "Unknown factor type"
-        assert factor_start is not None
-        self.listener.semanticError(factor_start.line, factor_start.column, msg)
-        return "unknown"
-
-    def from_term(self, term: LALGParser.TermContext) -> str:
-        factors: list = term.factor()  # type: ignore
-        operation_types = set()
-
-        for i, factor in enumerate(factors):
-            factor_type = self.from_factor(factor)
-            operation_types.add(factor_type)
-
-            if (
-                i > 0
-            ):  # If there's more than one factor, check the operations between them
-                operation = term.children[  # type: ignore
-                    i * 2 - 1
-                ]  # The operation is every second child (1, 3, 5, ...)
-                if operation.getText() in ["*", "/", "div", "and"]:
-                    if factor_type not in ["int", "real"]:
-                        self.listener.semanticError(
-                            operation.symbol.line,  # type: ignore
-                            operation.symbol.column,  # type: ignore
-                            "Invalid type for arithmetic operation",
-                        )
-                else:
-                    self.listener.semanticError(
-                        operation.symbol.line,  # type: ignore
-                        operation.symbol.column,  # type: ignore
-                        "Unknown operation type",
-                    )
-
-        if len(operation_types) > 1:
-            self.listener.semanticError(
-                term.start.line,
-                term.start.column,
-                "Mixed types in term without coercion",
-            )
-
-        return operation_types.pop()
-
-    def from_simple_expression(
-        self, simple_expression: LALGParser.SimpleExpressionContext
+    def from_primary_expression(
+        self, primary_expression: LALGParser.PrimaryExpressionContext
     ) -> VariableType:
-        terms: list = simple_expression.term()  # type: ignore
-        types_in_expression = set()
+        if primary_expression.literal():
+            return "boolean"
+        elif primary_expression.number():
+            return "int" if primary_expression.number().INT() else "real"  # type: ignore
+        elif primary_expression.variable():
+            identifier = primary_expression.variable().IDENTIFIER()  # type: ignore
+            variable_name = identifier.getText()
+            symbol = self.scope.get(variable_name)
+            if symbol is None or not (
+                isinstance(symbol, VariableSymbol)
+                or isinstance(symbol, ProcedureParamSymbol)
+            ):
+                line, column = identifier.symbol.line, identifier.symbol.column
+                msg = f"Variable {variable_name} not declared"
+                self.listener.semanticError(line, column, msg)
+                return "unknown"
+            else:
+                symbol.is_used = True
+                return symbol.type
 
-        for i, term in enumerate(terms):
-            term_type = self.from_term(term)
-            types_in_expression.add(term_type)
+        expression = primary_expression.expression()  # type: ignore
+        assert expression is not None
+        return self.from_expression(expression)
 
-            if i > 0:  # If there's more than one term, check the operators between them
-                operator = simple_expression.children[  # type: ignore
-                    i * 2 - 1
-                ]  # The operator is every second child (1, 3, 5, ...)
-                if operator.getText() in ["+", "-", "or"]:
-                    if term_type not in ["int", "real"]:
-                        self.listener.semanticError(
-                            operator.symbol.line,  # type: ignore
-                            operator.symbol.column,  # type: ignore
-                            "Invalid type for additive operation",
-                        )
-                else:
-                    self.listener.semanticError(
-                        operator.symbol.line,  # type: ignore
-                        operator.symbol.column,  # type: ignore
-                        "Unknown operator type",
-                    )
+    def from_unary_expression(
+        self, unary_expression: LALGParser.UnaryExpressionContext
+    ) -> VariableType:
+        type = self.from_primary_expression(unary_expression.primaryExpression())  # type: ignore
+        unary_operator = unary_expression.unaryOperator()
+        if unary_operator is None:
+            return type
 
-        if len(types_in_expression) > 1:
-            self.listener.semanticError(
-                simple_expression.start.line,
-                simple_expression.start.column,
-                "Mixed types in simple expression without coercion",
-            )
+        unary_for_number = unary_operator.SUM() or unary_operator.SUB()
+        expression_is_number = type == "int" or type == "real"
+        if unary_for_number and expression_is_number:
+            return type
+        elif unary_operator.NOT() and type == "boolean":
+            return type
+        else:
+            line, column = unary_operator.start.line, unary_operator.start.column
+            msg = f"Invalid unary operator {unary_operator.getText()} for {type}"
+            self.listener.semanticError(line, column, msg)
+            return "unknown"
 
-        return types_in_expression.pop()  # There should only be one type in the set
+    def from_multiplicative_expression(
+        self, multiplicative_expression: LALGParser.MultiplicativeExpressionContext
+    ) -> VariableType:
+        unary_expression = multiplicative_expression.unaryExpression()
+        assert isinstance(unary_expression, list)
+        type = self.from_unary_expression(unary_expression[0])  # type: ignore
+        if len(unary_expression) == 1:
+            return type
+
+        type_is_boolean = type == "boolean"
+        type_is_int = type == "int"
+        for i, expression in enumerate(unary_expression[1:]):
+            expression_type = self.from_unary_expression(expression)
+            if type != expression_type:
+                line, column = expression.start.line, expression.start.column
+                msg = f"Unmatched types in expression. Got {type} and {expression_type}"
+                self.listener.semanticError(line, column, msg)
+                return "unknown"
+
+            # Multiplicative operator
+            operator = multiplicative_expression.multiplicativeOperator(i)
+            assert operator is not None
+            operator_is_and = operator.AND()
+            operator_is_div = operator.DIV()
+            if type_is_boolean and not operator_is_and:
+                line, column = operator.start.line, operator.start.column
+                msg = f"Expected AND operator, got {operator.getText()}"
+                self.listener.semanticError(line, column, msg)
+                return "unknown"
+            elif not type_is_boolean and operator_is_and:
+                line, column = operator.start.line, operator.start.column
+                msg = f"Expected arithmetic operator, got {operator.getText()}"
+                self.listener.semanticError(line, column, msg)
+                return "unknown"
+            
+            if type_is_int and operator_is_div:
+                line, column = operator.start.line, operator.start.column
+                msg = f"The {operator.getText()} is only valid for real numbers. Use the DIV operator instead"
+                self.listener.semanticError(line, column, msg)
+                return "unknown"
+
+        return type
+
+    def from_additive_expression(
+        self, additive_expression: LALGParser.AdditiveExpressionContext
+    ) -> VariableType:
+        multiplicative_expression = additive_expression.multiplicativeExpression()
+        assert isinstance(multiplicative_expression, list)
+        type = self.from_multiplicative_expression(multiplicative_expression[0])
+        if len(multiplicative_expression) == 1:
+            return type
+
+        type_is_boolean = type == "boolean"
+        for i, expression in enumerate(multiplicative_expression[1:]):
+            expression_type = self.from_multiplicative_expression(expression)
+            if type != expression_type:
+                line, column = expression.start.line, expression.start.column
+                msg = f"Expected {type} expression, got {expression_type}"
+                self.listener.semanticError(line, column, msg)
+                return "unknown"
+
+            operator = additive_expression.additiveOperator(i)
+            assert operator is not None
+            operator_is_or = operator.OR()
+            if type_is_boolean and not operator_is_or:
+                line, column = operator.start.line, operator.start.column
+                msg = f"Expected OR operator, got {operator.getText()}"
+                self.listener.semanticError(line, column, msg)
+                return "unknown"
+            elif not type_is_boolean and operator_is_or:
+                line, column = operator.start.line, operator.start.column
+                msg = f"Expected arithmetic operator, got {operator.getText()}"
+                self.listener.semanticError(line, column, msg)
+                return "unknown"
+
+        return type
 
     def from_expression(self, expression: LALGParser.ExpressionContext) -> VariableType:
-        if expression.relationalOperator() is not None:
-            return "boolean"
+        additive_expression = expression.additiveExpression()
+        assert isinstance(additive_expression, list)
+        type = self.from_additive_expression(additive_expression[0])
+        if len(additive_expression) == 1:
+            return type
 
-        simple_expression = expression.simpleExpression()[0]  # type: ignore
-        return self.from_simple_expression(simple_expression)
+        for expression in additive_expression[1:]:
+            expression_type = self.from_additive_expression(expression)  # type: ignore
+            if type != expression_type:
+                line, column = expression.start.line, expression.start.column  # type: ignore
+                msg = f"Expected {type} expression, got {expression_type}"
+                self.listener.semanticError(line, column, msg)
+                return "unknown"
+
+        # At this point, if there are two additive expressions, they have a relational operator between them
+        return "boolean"
 
 
 class LALGSemanticAnalyzer(LALGParserVisitor):
@@ -192,17 +230,17 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
 
     def visitVariableDeclaration(self, ctx: LALGParser.VariableDeclarationContext):
         var_type: VariableType = ctx.type_().getText()  # type: ignore
-        identifiers = ctx.identifierList().IDENTIFIER()  # type: ignore
+        identifiers: list = ctx.identifierList().IDENTIFIER()  # type: ignore
         for identifier in identifiers:
             variable_name: str = identifier.getText()
-            if self.current_scope.resolve(variable_name):
+            if self.current_scope.get(variable_name):
                 self.errorListener.semanticError(
                     identifier.symbol.line,
                     identifier.symbol.column,
                     f"Variable {variable_name} already declared in the {self.current_scope.scope_name} scope",
                 )
             else:
-                self.current_scope.define(
+                self.current_scope.set(
                     VariableSymbol(
                         variable_name, Position.from_symbol(identifier.symbol), var_type
                     )
@@ -210,7 +248,7 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
 
     def visitProcedureDeclaration(self, ctx: LALGParser.ProcedureDeclarationContext):
         proc_name: str = ctx.IDENTIFIER().getText()  # type: ignore
-        if self.current_scope.resolve(proc_name):
+        if self.current_scope.get(proc_name):
             identifier = ctx.IDENTIFIER()
             self.errorListener.semanticError(
                 identifier.symbol.line,  # type: ignore
@@ -222,17 +260,15 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
             assert self.current_scope.enclosing_scope is not None
             self.visitChildren(ctx)
 
-            def param_condition(symbol):
-                return isinstance(symbol, ProcedureParamSymbol)
-
+            param_condition = lambda symbol: isinstance(symbol, ProcedureParamSymbol)
             collected_symbols = self.current_scope.symbols.values()
             identifier = ctx.IDENTIFIER()
             symbol = ProcedureSymbol(
                 proc_name,
-                Position.from_symbol(identifier.symbol),
-                list(filter(param_condition, collected_symbols)),
+                Position.from_symbol(identifier.symbol),  # type: ignore
+                list(filter(param_condition, collected_symbols)),  # type: ignore
             )  # type: ignore
-            self.current_scope.enclosing_scope.define(symbol)
+            self.current_scope.enclosing_scope.set(symbol)
             self.exitScope()
 
     def visitFormalParameterList(self, ctx: LALGParser.FormalParameterListContext):
@@ -242,7 +278,7 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
             identifiers: list = section.identifierList().IDENTIFIER()
             for identifier in identifiers:
                 variable_name: str = identifier.getText()
-                symbol = self.current_scope.resolve(variable_name)
+                symbol = self.current_scope.get(variable_name)
                 if symbol is not None:
                     line, column = identifier.symbol.line, identifier.symbol.column
                     msg = f"Param {variable_name} is duplicated in the procedure {self.current_scope.scope_name}"
@@ -251,13 +287,13 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                     symbol = ProcedureParamSymbol(
                         variable_name, Position.from_symbol(identifier.symbol), var_type
                     )
-                    self.current_scope.define(symbol)
+                    self.current_scope.set(symbol)
 
     def visitProcedureCallStatement(
         self, ctx: LALGParser.ProcedureCallStatementContext
     ):
         proc_name: str = ctx.IDENTIFIER().getText()  # type: ignore
-        proc_symbol = self.current_scope.resolve(proc_name)
+        proc_symbol = self.current_scope.get(proc_name)
         if proc_symbol is None or not isinstance(proc_symbol, ProcedureSymbol):
             identifier = ctx.IDENTIFIER()
             line, column = identifier.symbol.line, identifier.symbol.column  # type: ignore
@@ -303,11 +339,25 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                     f"Procedure {proc_name} expected {len(proc_symbol.params)} parameters, got 0",
                 )
 
+    #def visitVariable(self, ctx: LALGParser.VariableContext):
+    #    variable_name = ctx.IDENTIFIER().getText()  # type: ignore
+    #    symbol = self.current_scope.get(variable_name)
+    #    if symbol is None or not (
+    #        isinstance(symbol, VariableSymbol)
+    #        or isinstance(symbol, ProcedureParamSymbol)
+    #    ):
+    #        identifier = ctx.IDENTIFIER()
+    #        line, column = identifier.symbol.line, identifier.symbol.column  # type: ignore
+    #        msg = f"Variable {variable_name} not declared"
+    #        return self.errorListener.semanticError(line, column, msg)
+
+    #    symbol.is_used = True
+
     def visitAssignmentStatement(self, ctx: LALGParser.AssignmentStatementContext):
         variable = ctx.variable()
         assert variable is not None
-        variable_name = variable.IDENTIFIER().getText()
-        symbol = self.current_scope.resolve(variable_name)
+        variable_name: str = variable.IDENTIFIER().getText()
+        symbol = self.current_scope.get(variable_name)
         if symbol is None or not (
             isinstance(symbol, VariableSymbol)
             or isinstance(symbol, ProcedureParamSymbol)
@@ -318,7 +368,10 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
             return self.errorListener.semanticError(line, column, msg)
 
         symbol.is_used = True
+
         expression = ctx.expression()
+        self.visit(expression)
+        assert expression is not None
         expression_type = self.type_extractor.from_expression(expression)
         if symbol.type != expression_type:
             self.errorListener.semanticError(
@@ -329,6 +382,7 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
 
     def visitConditionalStatement(self, ctx: LALGParser.ConditionalStatementContext):
         expression = ctx.expression()
+        assert expression is not None
         expression_type = self.type_extractor.from_expression(expression)
         if expression_type != "boolean":
             self.errorListener.semanticError(
@@ -337,8 +391,12 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                 f"Expected boolean expression, got {expression_type}",
             )
 
+        self.visitChildren(ctx)
+
     def visitLoopStatement(self, ctx: LALGParser.LoopStatementContext):
         expression = ctx.expression()
+        self.visitChildren(ctx)
+        assert expression is not None
         expression_type = self.type_extractor.from_expression(expression)
         if expression_type != "boolean":
             self.errorListener.semanticError(
@@ -346,20 +404,6 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                 ctx.WHILE().symbol.column,  # type: ignore
                 f"Expected boolean expression, got {expression_type}",
             )
-
-    def visitTerm(self, ctx: LALGParser.TermContext):
-        # dividsion of integers only allowed with INT_DIV
-        if ctx.INT_DIV():
-            left_term = ctx.factor(0)
-            right_term = ctx.factor(1)
-            left_type = self.type_extractor.from_factor(left_term)
-            right_type = self.type_extractor.from_factor(right_term)
-            if left_type != "int" or right_type != "int":
-                self.errorListener.semanticError(
-                    ctx.INT_DIV().symbol.line,  # type: ignore
-                    ctx.INT_DIV().symbol.column,  # type: ignore
-                    f"Expected integer expression, got {left_type} and {right_type}",
-                )
 
     def visitBlock(self, ctx: LALGParser.BlockContext):
         self.visitChildren(ctx)
