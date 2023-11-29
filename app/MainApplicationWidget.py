@@ -150,11 +150,8 @@ class MainApplicationWidget(QWidget):
 
         tree = parser.program()
 
-
         if parser.getNumberOfSyntaxErrors() > 0:
             return
-        
-        print(tree.toStringTree(recog=parser))
 
         semanticAnalyzer = LALGSemanticAnalyzer(listener)
         semanticAnalyzer.visit(tree)
@@ -162,11 +159,11 @@ class MainApplicationWidget(QWidget):
         if listener.hasErrors:
             return
 
-        codeGenerator = LALGCodeGenerator()
-        code = codeGenerator.generate(tree)
+        # codeGenerator = LALGCodeGenerator()
+        # code = codeGenerator.generate(tree)
 
-        interpreter = LALGCodeInterpreter(code)
-        interpreter.run()
+        # interpreter = LALGCodeInterpreter(code)
+        # interpreter.run()
 
     def toggleLexer(self):
         self.updateLabel(CompilerSteps.LEXER)

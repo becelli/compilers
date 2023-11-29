@@ -12,9 +12,9 @@ begin
 			write(b)
 		end;
 
-	while(a > 0) {loop não está sendo executado}
+	while(a > 0)
 		begin 
-			b:=b+1; {b não está sendo incrementado}
+			b:=b+1;
 			write(b);
 			a:=a-1
 		end

@@ -2,5 +2,5 @@ program exemplo_1;
 int x, y;
 begin
 	read(x,y);
-	if x > y write(x)
+	if (x > y) write(x)
 end.

@@ -161,48 +161,75 @@ class LALGParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by LALGParser#additiveExpression.
+    def enterAdditiveExpression(self, ctx:LALGParser.AdditiveExpressionContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#additiveExpression.
+    def exitAdditiveExpression(self, ctx:LALGParser.AdditiveExpressionContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#multiplicativeExpression.
+    def enterMultiplicativeExpression(self, ctx:LALGParser.MultiplicativeExpressionContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#multiplicativeExpression.
+    def exitMultiplicativeExpression(self, ctx:LALGParser.MultiplicativeExpressionContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#unaryExpression.
+    def enterUnaryExpression(self, ctx:LALGParser.UnaryExpressionContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#unaryExpression.
+    def exitUnaryExpression(self, ctx:LALGParser.UnaryExpressionContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#primaryExpression.
+    def enterPrimaryExpression(self, ctx:LALGParser.PrimaryExpressionContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#primaryExpression.
+    def exitPrimaryExpression(self, ctx:LALGParser.PrimaryExpressionContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#additiveOperator.
+    def enterAdditiveOperator(self, ctx:LALGParser.AdditiveOperatorContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#additiveOperator.
+    def exitAdditiveOperator(self, ctx:LALGParser.AdditiveOperatorContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#multiplicativeOperator.
+    def enterMultiplicativeOperator(self, ctx:LALGParser.MultiplicativeOperatorContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#multiplicativeOperator.
+    def exitMultiplicativeOperator(self, ctx:LALGParser.MultiplicativeOperatorContext):
+        pass
+
+
+    # Enter a parse tree produced by LALGParser#unaryOperator.
+    def enterUnaryOperator(self, ctx:LALGParser.UnaryOperatorContext):
+        pass
+
+    # Exit a parse tree produced by LALGParser#unaryOperator.
+    def exitUnaryOperator(self, ctx:LALGParser.UnaryOperatorContext):
+        pass
+
+
     # Enter a parse tree produced by LALGParser#relationalOperator.
     def enterRelationalOperator(self, ctx:LALGParser.RelationalOperatorContext):
         pass
 
     # Exit a parse tree produced by LALGParser#relationalOperator.
     def exitRelationalOperator(self, ctx:LALGParser.RelationalOperatorContext):
-        pass
-
-
-    # Enter a parse tree produced by LALGParser#simpleExpression.
-    def enterSimpleExpression(self, ctx:LALGParser.SimpleExpressionContext):
-        pass
-
-    # Exit a parse tree produced by LALGParser#simpleExpression.
-    def exitSimpleExpression(self, ctx:LALGParser.SimpleExpressionContext):
-        pass
-
-
-    # Enter a parse tree produced by LALGParser#simpleExpressionOperator.
-    def enterSimpleExpressionOperator(self, ctx:LALGParser.SimpleExpressionOperatorContext):
-        pass
-
-    # Exit a parse tree produced by LALGParser#simpleExpressionOperator.
-    def exitSimpleExpressionOperator(self, ctx:LALGParser.SimpleExpressionOperatorContext):
-        pass
-
-
-    # Enter a parse tree produced by LALGParser#term.
-    def enterTerm(self, ctx:LALGParser.TermContext):
-        pass
-
-    # Exit a parse tree produced by LALGParser#term.
-    def exitTerm(self, ctx:LALGParser.TermContext):
-        pass
-
-
-    # Enter a parse tree produced by LALGParser#factor.
-    def enterFactor(self, ctx:LALGParser.FactorContext):
-        pass
-
-    # Exit a parse tree produced by LALGParser#factor.
-    def exitFactor(self, ctx:LALGParser.FactorContext):
         pass
 
 

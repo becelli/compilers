@@ -31,6 +31,7 @@ class LALGCodeInterpreter:
         """Executes the MEPA code."""
         while True:
             instruction, operand = self.fetch_instruction()
+            print(f"{self.instruction_pointer}: {instruction} {operand}")
             has_next_instruction = self.process_instruction(instruction, operand)
             if not has_next_instruction:
                 break
@@ -67,7 +68,7 @@ class LALGCodeInterpreter:
             # "IMPC": self.print_character,
             # "IMPE": self.print_newline,
             # "DMEM": self.deallocate_memory,
-            # "NADA": self.no_operation,
+            "NADA": self.no_operation,
             "PARA": self.end_program,
         }
 
@@ -91,7 +92,6 @@ class LALGCodeInterpreter:
 
     def load_value(self, operand: int) -> bool:
         """Loads a value from the stack."""
-        # TODO: Check if should start backwards
         loaded_value = self.stack[operand]
         self.stack.append(loaded_value)
         return True
@@ -162,7 +162,6 @@ class LALGCodeInterpreter:
 
     def logical_not(self, operand: int) -> bool:
         """Performs a logical not."""
-        # TODO: Check if this is correct. If not, return to not self.stack.pop()
         value = self.stack.pop()
         assert value is not None
         self.stack.append(1 - value)
@@ -212,7 +211,6 @@ class LALGCodeInterpreter:
 
     def unconditional_jump(self, operand: int) -> bool:
         """Performs an unconditional jump."""
-        # TODO: Check if should really be -1
         self.instruction_pointer = operand - 1
         return True
 
@@ -246,7 +244,6 @@ class LALGCodeInterpreter:
 
     def print_newline(self, operand: int) -> bool:
         """Prints a newline."""
-        # TODO: Check if this is correct
         print(self.stack.pop())
         return True
 

@@ -1,31 +1,12 @@
 from __future__ import annotations
-from typing import Literal, Optional
 from libraries.antlr.LALGParser import LALGParser
 from libraries.antlr.LALGParserVisitor import LALGParserVisitor
-from libraries.antlr.custom.LALGErrorListener import LALGErrorListener
-from abc import ABC
-from enum import Enum
 
 
-VariableType = Literal["int", "boolean"]
-
-
-class Variable(ABC):
+class Variable:
     def __init__(self, name: str, address: int):
         self.name = name
         self.address = address
-
-
-class Boolean(Variable):
-    def __init__(self, name: str, address: int, value: Optional[bool] = None):
-        super().__init__(name, address)
-        self.value = value
-
-
-class Integer(Variable):
-    def __init__(self, name: str, address: int, value: Optional[int] = None):
-        super().__init__(name, address)
-        self.value = value
 
 
 class LALGCodeGenerator(LALGParserVisitor):
@@ -49,14 +30,12 @@ class LALGCodeGenerator(LALGParserVisitor):
         return self.code
 
     def visitVariableDeclaration(self, ctx: LALGParser.VariableDeclarationContext):
-        var_type: VariableType = ctx.type_().getText()  # type: ignore
         identifiers = ctx.identifierList().IDENTIFIER()  # type: ignore
         for identifier in identifiers:
             name: str = identifier.getText()
             address = self.data_counter
             self.data_counter += 1
-            Constructor = Integer if var_type == "int" else Boolean
-            self.variables[name] = Constructor(name, address)
+            self.variables[name] = Variable(name, address)
             self.code.append(f"AMEM 1")
 
         self.visitChildren(ctx)
@@ -88,8 +67,6 @@ class LALGCodeGenerator(LALGParserVisitor):
         self.code.append(f"CRVL {variable.address}")
 
     def visitConditionalStatement(self, ctx: LALGParser.ConditionalStatementContext):
-        # conditionalStatement: IF LP expression RP statement (ELSE statement)?;
-        # DSVF (if false) and DSVS (always) instructions
         self.visit(ctx.expression())
         self.code.append("DSVF")
         l1 = len(self.code) - 1
@@ -106,9 +83,6 @@ class LALGCodeGenerator(LALGParserVisitor):
         return self.code
 
     def visitLoopStatement(self, ctx: LALGParser.LoopStatementContext):
-        # loopStatement: WHILE LP expression RP statement;
-        # DSVF (if false) and DSVS (always) instructions
-
         l1 = len(self.code)
         self.visit(ctx.expression())
         self.code.append("DSVF")
@@ -133,61 +107,67 @@ class LALGCodeGenerator(LALGParserVisitor):
             self.code.append("CMEG")
 
     def visitExpression(self, ctx: LALGParser.ExpressionContext):
-        simple_expressions = ctx.simpleExpression()
-        assert isinstance(simple_expressions, list)
-        self.visit(simple_expressions[0])
-        length = len(simple_expressions)
+        additive_expressions = ctx.additiveExpression()
+        assert isinstance(additive_expressions, list)
+        self.visit(additive_expressions[0])
+        length = len(additive_expressions)
         assert length <= 2
-        for i in range(len(simple_expressions) - 1):
-            self.visit(simple_expressions[i + 1])
+        if length == 2:
+            self.visit(additive_expressions[1])
             self.visit(ctx.relationalOperator())
 
-    def visitTerm(self, ctx: LALGParser.TermContext):
-        factors = ctx.factor()
-        assert isinstance(factors, list)
-        for i in range(len(factors) - 1):
-            self.visit(factors[i + 1])
-            if ctx.MUL(i):
-                self.code.append("MULT")
-            elif ctx.AND(i):
-                self.code.append("CONJ")
-            elif ctx.INT_DIV(i):
-                self.code.append("DIVI")
-            elif ctx.DIV(i):
-                self.code.append("DIVI")
+    def visitAdditiveExpression(self, ctx: LALGParser.AdditiveExpressionContext):
+        multiplicative_expressions = ctx.multiplicativeExpression()
+        assert isinstance(multiplicative_expressions, list)
+        self.visit(multiplicative_expressions[0])
+        length = len(multiplicative_expressions)
+        for i in range(length - 1):
+            self.visit(multiplicative_expressions[i + 1])
+            self.visit(ctx.additiveOperator(i))
 
-        return super().visitTerm(ctx)
-
-    def visitSimpleExpressionOperator(
-        self, ctx: LALGParser.SimpleExpressionOperatorContext
+    def visitMultiplicativeExpression(
+        self, ctx: LALGParser.MultiplicativeExpressionContext
     ):
+        unary_expressions = ctx.unaryExpression()
+        assert isinstance(unary_expressions, list)
+        self.visit(unary_expressions[0])
+        length = len(unary_expressions)
+        for i in range(length - 1):
+            self.visit(unary_expressions[i + 1])
+            self.visit(ctx.multiplicativeOperator(i))
+
+    def visitUnaryExpression(self, ctx: LALGParser.UnaryExpressionContext):
+        self.visit(ctx.primaryExpression())
+        if ctx.unaryOperator():
+            self.visit(ctx.unaryOperator())
+
+    def visitUnaryOperator(self, ctx: LALGParser.UnaryOperatorContext):
+        if ctx.SUM():
+            self.code.append("NADA")
+        elif ctx.SUB():
+            self.code.append("INVR")
+        elif ctx.NOT():
+            self.code.append("NEGA")
+
+    def visitMultiplicativeOperator(
+        self, ctx: LALGParser.MultiplicativeOperatorContext
+    ):
+        if ctx.MUL():
+            self.code.append("MULT")
+        elif ctx.DIV():
+            self.code.append("DIVI")
+        elif ctx.INT_DIV():
+            self.code.append("DIVI")
+        elif ctx.AND():
+            self.code.append("CONJ")
+
+    def visitAdditiveOperator(self, ctx: LALGParser.AdditiveOperatorContext):
         if ctx.SUM():
             self.code.append("SOMA")
         elif ctx.SUB():
             self.code.append("SUBT")
         elif ctx.OR():
             self.code.append("DISJ")
-
-    def visitFactor(self, ctx: LALGParser.FactorContext):
-        if ctx.NOT():
-            self.visit(ctx.factor())
-            self.code.append("NEGA")
-        else:
-            self.visitChildren(ctx)
-
-    def visitSimpleExpression(self, ctx: LALGParser.SimpleExpressionContext):
-        # term_signal = ctx.termSignal()
-
-        terms = ctx.term()
-        assert isinstance(terms, list)
-        self.visit(terms[0])
-        # if term_signal:
-        #     self.visit(term_signal)
-
-        terms_len = len(terms)
-        for i in range(terms_len - 1):
-            self.visit(terms[i + 1])
-            self.visit(ctx.simpleExpressionOperator(i))
 
     def visitLiteral(self, ctx: LALGParser.LiteralContext):
         if ctx.LITERAL_FALSE():
