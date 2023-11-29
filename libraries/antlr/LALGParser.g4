@@ -23,7 +23,6 @@ variableDeclarationSection:
 
 variableDeclaration: type identifierList;
 
-// add semicolon to this?
 identifierList: IDENTIFIER (COMMA IDENTIFIER)*;
 
 // Subroutine declaration
@@ -61,8 +60,7 @@ loopStatement: WHILE expression statement;
 
 // Expressions
 
-expression:
-	simpleExpression (relationalOperator simpleExpression)?;
+expression: simpleExpression (relationalOperator simpleExpression)?;
 
 relationalOperator:
 	EQUAL
