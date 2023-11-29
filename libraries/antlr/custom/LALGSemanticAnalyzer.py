@@ -108,7 +108,7 @@ class TypeExtractor:
             return type
         else:
             line, column = unary_operator.start.line, unary_operator.start.column
-            msg = f"Invalid unary operator {unary_operator.getText()} for {type} expression"
+            msg = f"Invalid unary operator {unary_operator.getText()} for {type}"
             self.listener.semanticError(line, column, msg)
             return "unknown"
 
@@ -122,11 +122,12 @@ class TypeExtractor:
             return type
 
         type_is_boolean = type == "boolean"
+        type_is_int = type == "int"
         for i, expression in enumerate(unary_expression[1:]):
             expression_type = self.from_unary_expression(expression)
             if type != expression_type:
                 line, column = expression.start.line, expression.start.column
-                msg = f"Expected {type} expression, got {expression_type}"
+                msg = f"Unmatched types in expression. Got {type} and {expression_type}"
                 self.listener.semanticError(line, column, msg)
                 return "unknown"
 
@@ -134,6 +135,7 @@ class TypeExtractor:
             operator = multiplicative_expression.multiplicativeOperator(i)
             assert operator is not None
             operator_is_and = operator.AND()
+            operator_is_div = operator.DIV()
             if type_is_boolean and not operator_is_and:
                 line, column = operator.start.line, operator.start.column
                 msg = f"Expected AND operator, got {operator.getText()}"
@@ -142,6 +144,12 @@ class TypeExtractor:
             elif not type_is_boolean and operator_is_and:
                 line, column = operator.start.line, operator.start.column
                 msg = f"Expected arithmetic operator, got {operator.getText()}"
+                self.listener.semanticError(line, column, msg)
+                return "unknown"
+            
+            if type_is_int and operator_is_div:
+                line, column = operator.start.line, operator.start.column
+                msg = f"The {operator.getText()} is only valid for real numbers. Use the DIV operator instead"
                 self.listener.semanticError(line, column, msg)
                 return "unknown"
 
