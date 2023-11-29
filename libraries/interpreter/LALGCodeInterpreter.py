@@ -31,7 +31,7 @@ class LALGCodeInterpreter:
         """Executes the MEPA code."""
         while True:
             instruction, operand = self.fetch_instruction()
-            print(f"{self.instruction_pointer}: {instruction} {operand}")
+            # print(f"{self.instruction_pointer}: {instruction} {operand}")
             has_next_instruction = self.process_instruction(instruction, operand)
             if not has_next_instruction:
                 break
@@ -232,14 +232,14 @@ class LALGCodeInterpreter:
 
     def print_integer(self, operand: int) -> bool:
         """Prints an integer."""
-        print(self.stack.pop())
+        print(f"Integer output: {self.stack.pop()}")
         return True
 
     def print_character(self, operand: int) -> bool:
         """Prints a character."""
         character_ord = self.stack.pop()
         assert character_ord is not None
-        print(chr(character_ord), end="")
+        print(f"Char output: {chr(character_ord)}", end="")
         return True
 
     def print_newline(self, operand: int) -> bool:

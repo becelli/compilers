@@ -53,10 +53,10 @@ class Scope:
         self.enclosing_scope: Optional[Scope] = enclosing_scope
         self.symbols: dict[str, Symbol] = {}
 
-    def define(self, symbol: Symbol):
+    def set(self, symbol: Symbol):
         self.symbols[symbol.name] = symbol
 
-    def find(self, name: str) -> Optional[Symbol]:
+    def get(self, name: str) -> Optional[Symbol]:
         return self.symbols.get(name)
 
 
@@ -75,7 +75,7 @@ class TypeExtractor:
         elif primary_expression.variable():
             identifier = primary_expression.variable().IDENTIFIER()  # type: ignore
             variable_name = identifier.getText()
-            symbol = self.scope.find(variable_name)
+            symbol = self.scope.get(variable_name)
             if symbol is None or not (
                 isinstance(symbol, VariableSymbol)
                 or isinstance(symbol, ProcedureParamSymbol)
@@ -233,14 +233,14 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
         identifiers: list = ctx.identifierList().IDENTIFIER()  # type: ignore
         for identifier in identifiers:
             variable_name: str = identifier.getText()
-            if self.current_scope.find(variable_name):
+            if self.current_scope.get(variable_name):
                 self.errorListener.semanticError(
                     identifier.symbol.line,
                     identifier.symbol.column,
                     f"Variable {variable_name} already declared in the {self.current_scope.scope_name} scope",
                 )
             else:
-                self.current_scope.define(
+                self.current_scope.set(
                     VariableSymbol(
                         variable_name, Position.from_symbol(identifier.symbol), var_type
                     )
@@ -248,7 +248,7 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
 
     def visitProcedureDeclaration(self, ctx: LALGParser.ProcedureDeclarationContext):
         proc_name: str = ctx.IDENTIFIER().getText()  # type: ignore
-        if self.current_scope.find(proc_name):
+        if self.current_scope.get(proc_name):
             identifier = ctx.IDENTIFIER()
             self.errorListener.semanticError(
                 identifier.symbol.line,  # type: ignore
@@ -268,7 +268,7 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                 Position.from_symbol(identifier.symbol),  # type: ignore
                 list(filter(param_condition, collected_symbols)),  # type: ignore
             )  # type: ignore
-            self.current_scope.enclosing_scope.define(symbol)
+            self.current_scope.enclosing_scope.set(symbol)
             self.exitScope()
 
     def visitFormalParameterList(self, ctx: LALGParser.FormalParameterListContext):
@@ -278,7 +278,7 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
             identifiers: list = section.identifierList().IDENTIFIER()
             for identifier in identifiers:
                 variable_name: str = identifier.getText()
-                symbol = self.current_scope.find(variable_name)
+                symbol = self.current_scope.get(variable_name)
                 if symbol is not None:
                     line, column = identifier.symbol.line, identifier.symbol.column
                     msg = f"Param {variable_name} is duplicated in the procedure {self.current_scope.scope_name}"
@@ -287,13 +287,13 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                     symbol = ProcedureParamSymbol(
                         variable_name, Position.from_symbol(identifier.symbol), var_type
                     )
-                    self.current_scope.define(symbol)
+                    self.current_scope.set(symbol)
 
     def visitProcedureCallStatement(
         self, ctx: LALGParser.ProcedureCallStatementContext
     ):
         proc_name: str = ctx.IDENTIFIER().getText()  # type: ignore
-        proc_symbol = self.current_scope.find(proc_name)
+        proc_symbol = self.current_scope.get(proc_name)
         if proc_symbol is None or not isinstance(proc_symbol, ProcedureSymbol):
             identifier = ctx.IDENTIFIER()
             line, column = identifier.symbol.line, identifier.symbol.column  # type: ignore
@@ -339,25 +339,25 @@ class LALGSemanticAnalyzer(LALGParserVisitor):
                     f"Procedure {proc_name} expected {len(proc_symbol.params)} parameters, got 0",
                 )
 
-    def visitVariable(self, ctx: LALGParser.VariableContext):
-        variable_name = ctx.IDENTIFIER().getText()  # type: ignore
-        symbol = self.current_scope.find(variable_name)
-        if symbol is None or not (
-            isinstance(symbol, VariableSymbol)
-            or isinstance(symbol, ProcedureParamSymbol)
-        ):
-            identifier = ctx.IDENTIFIER()
-            line, column = identifier.symbol.line, identifier.symbol.column  # type: ignore
-            msg = f"Variable {variable_name} not declared"
-            return self.errorListener.semanticError(line, column, msg)
+    #def visitVariable(self, ctx: LALGParser.VariableContext):
+    #    variable_name = ctx.IDENTIFIER().getText()  # type: ignore
+    #    symbol = self.current_scope.get(variable_name)
+    #    if symbol is None or not (
+    #        isinstance(symbol, VariableSymbol)
+    #        or isinstance(symbol, ProcedureParamSymbol)
+    #    ):
+    #        identifier = ctx.IDENTIFIER()
+    #        line, column = identifier.symbol.line, identifier.symbol.column  # type: ignore
+    #        msg = f"Variable {variable_name} not declared"
+    #        return self.errorListener.semanticError(line, column, msg)
 
-        symbol.is_used = True
+    #    symbol.is_used = True
 
     def visitAssignmentStatement(self, ctx: LALGParser.AssignmentStatementContext):
         variable = ctx.variable()
         assert variable is not None
         variable_name: str = variable.IDENTIFIER().getText()
-        symbol = self.current_scope.find(variable_name)
+        symbol = self.current_scope.get(variable_name)
         if symbol is None or not (
             isinstance(symbol, VariableSymbol)
             or isinstance(symbol, ProcedureParamSymbol)

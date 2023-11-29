@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 from libraries.antlr.LALGParser import LALGParser
 from libraries.antlr.LALGParserVisitor import LALGParserVisitor

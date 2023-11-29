@@ -34,6 +34,7 @@ class MainApplicationWidget(QWidget):
         self.setupTableLexer()
         self.setupOutputs()
         self.updateLabel()
+        self.is_running = False
 
     def setupMainLayout(self):
         self.editorLayout = QVBoxLayout()
@@ -111,6 +112,8 @@ class MainApplicationWidget(QWidget):
                 self.table.setItem(row, col, QTableWidgetItem(str(value)))
 
     def compile(self):
+        if self.is_running:
+            return
         self.outputError.clear()
         listener = LALGErrorListener(self.outputError)
         self.lexicalAnalysis(listener)
@@ -159,11 +162,12 @@ class MainApplicationWidget(QWidget):
         if listener.hasErrors:
             return
 
-        # codeGenerator = LALGCodeGenerator()
-        # code = codeGenerator.generate(tree)
-
-        # interpreter = LALGCodeInterpreter(code)
-        # interpreter.run()
+        self.is_running = True
+        codeGenerator = LALGCodeGenerator()
+        code = codeGenerator.generate(tree)
+        interpreter = LALGCodeInterpreter(code)
+        interpreter.run()
+        self.is_running = False
 
     def toggleLexer(self):
         self.updateLabel(CompilerSteps.LEXER)
