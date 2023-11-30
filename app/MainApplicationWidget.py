@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (
     QTextEdit,
     QVBoxLayout,
     QWidget,
+    QSizePolicy,
 )
 from antlr4 import CommonTokenStream, InputStream
 from app.entities.CompilerSteps import CompilerSteps
@@ -33,7 +34,10 @@ class MainApplicationWidget(QWidget):
         self.setupEditor()
         self.setupTableLexer()
         self.setupOutputs()
-        self.updateLabel()
+
+        # make elements in tableAndErrorsLayout to expand
+        self.tableAndErrorsLayout.addStretch()
+
         self.is_running = False
 
     def setupMainLayout(self):
@@ -56,8 +60,8 @@ class MainApplicationWidget(QWidget):
             ColorMapper.getColor(Colors.lowContrastStyle)
         )
 
-        self.textEditor.setMarginWidth(1, "000")
-        self.textEditor.setMarginWidth(2, "00")
+        self.textEditor.setMarginWidth(1, "0000000")
+        self.textEditor.setMarginWidth(2, "000000")
 
         font = QFont("monospace", 16)
         self.textEditor.setFont(font)
@@ -66,7 +70,7 @@ class MainApplicationWidget(QWidget):
         self.editorLayout.addWidget(self.textEditor)
 
     def setupTableLexer(self):
-        self.table = QTableWidget(1, 5, self)
+        self.table = QTableWidget(0, 5, self)
         horizontalHeader = self.table.horizontalHeader()
         if horizontalHeader is not None:
             horizontalHeader.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
@@ -75,8 +79,14 @@ class MainApplicationWidget(QWidget):
         )
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
 
-        self.tableAndErrorsLayout.addWidget(self.table)
+        # self.table.setSizePolicy(
+        #     QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        # )
+        # self.table.setSizeAdjustPolicy(QTableWidget.SizeAdjustPolicy.AdjustToContents)
+
+        self.tableAndErrorsLayout.addWidget(self.table, 1)
 
     def setupOutputs(self):
         self.outputErrorType = QLabel("Errors")
@@ -84,7 +94,14 @@ class MainApplicationWidget(QWidget):
         self.errorLayout = self.createOutputLayout(
             self.outputErrorType, self.outputError
         )
-        self.tableAndErrorsLayout.addLayout(self.errorLayout)
+
+        # self.outputError.setSizePolicy(
+        #     QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        # )
+        # self.outputError.setSizeAdjustPolicy(
+        #     QTextEdit.SizeAdjustPolicy.AdjustToContents
+        # )
+        self.tableAndErrorsLayout.addLayout(self.errorLayout, 1)
 
     def createOutput(self) -> QTextEdit:
         output = QTextEdit()
@@ -95,7 +112,8 @@ class MainApplicationWidget(QWidget):
         layout = QVBoxLayout()
         layout.addStretch()
         layout.addWidget(title)
-        layout.addWidget(output)
+        layout.addWidget(output, 1)
+        layout.setContentsMargins(0, 0, 0, 0)
         return layout
 
     def setCode(self, code: str):
@@ -168,24 +186,3 @@ class MainApplicationWidget(QWidget):
         interpreter = LALGCodeInterpreter(code)
         interpreter.run()
         self.is_running = False
-
-    def toggleLexer(self):
-        self.updateLabel(CompilerSteps.LEXER)
-
-    def toggleSyntax(self):
-        self.updateLabel(CompilerSteps.SYNTAX)
-
-    def toggleSemantic(self):
-        self.updateLabel(CompilerSteps.SEMANTIC)
-
-    def updateLabel(self, CompilerSteps: CompilerSteps = CompilerSteps.LEXER):
-        match CompilerSteps:
-            case CompilerSteps.LEXER:
-                pass
-                # self.outputErrorType.setText("Lexer Errors")
-            case CompilerSteps.SYNTAX:
-                pass
-                # self.outputErrorType.setText("Syntax Errors")
-            case CompilerSteps.SEMANTIC:
-                pass
-                # self.outputErrorType.setText("Semantic Errors")
